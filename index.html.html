@@ -1,0 +1,795 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Musée — Œuvres du Quotidien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --encre:#08070d; --encre2:#0f0e18; --ardoise:#16141f; --ardoise2:#1e1b2d;
+  --parchemin:#f0e8d8; --parchemin-dim:#9a8f7e; --ligne:rgba(240,232,216,.09);
+  --or:#e8c47a; --or-bright:#f5dfa0;
+  --r-commun:#9e9e8a; --r-rare:#7ab8d4; --r-epique:#c97cdb; --r-legendaire:#e8c47a;
+  --accent:#c97cdb;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  background:radial-gradient(ellipse 160% 80% at 50% -10%, #1a1230 0%, var(--encre) 60%) fixed, var(--encre);
+  color:var(--parchemin); font-family:"DM Sans",system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+button{font-family:inherit;color:inherit;border:none;background:none;cursor:pointer}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* ---- layout ---- */
+#app{display:grid;grid-template-columns:248px 1fr;min-height:100vh;max-width:1340px;margin:0 auto}
+.sidebar{
+  border-right:1px solid var(--ligne); padding:28px 20px; display:flex;flex-direction:column;gap:20px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 40%);
+}
+.brand .kick{font:500 10px/1 "DM Mono";letter-spacing:.32em;text-transform:uppercase;color:var(--or);opacity:.85}
+.brand .name{font:700 28px/1 "Cormorant Garamond";letter-spacing:-.01em;margin-top:8px;font-style:italic}
+.nav{display:flex;flex-direction:column;gap:4px}
+.navbtn{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:10px;color:var(--parchemin-dim);font:500 13.5px "DM Sans";transition:.18s}
+.navbtn .ic{font-size:16px;width:20px;text-align:center}
+.navbtn:hover{background:var(--ardoise);color:var(--parchemin)}
+.navbtn.on{background:var(--ardoise2);color:var(--or)}
+
+.eclat-card{margin-top:auto;background:var(--ardoise);border:1px solid var(--ligne);border-radius:12px;padding:13px 15px}
+.eclat-card .lab{font:500 10px "DM Mono";letter-spacing:.18em;text-transform:uppercase;color:var(--parchemin-dim)}
+.eclat-card .val{font:700 22px/1 "Cormorant Garamond";margin-top:4px;display:flex;align-items:center;gap:6px}
+.streak-card{background:var(--ardoise);border:1px solid var(--ligne);border-radius:12px;padding:13px 15px}
+.streak-card .lab{font:500 10px "DM Mono";letter-spacing:.18em;text-transform:uppercase;color:var(--parchemin-dim)}
+.streak-card .val{font:700 22px/1 "Cormorant Garamond";margin-top:4px}
+.streak-card .val b{color:var(--or)}
+.sidebtn{display:flex;align-items:center;gap:9px;color:var(--parchemin-dim);font:500 13px "DM Sans";padding:7px 4px;border-radius:8px}
+.sidebtn:hover{color:var(--parchemin)}
+.sidebtn.invite{background:linear-gradient(180deg,var(--or-bright),var(--or));color:#2a1d04;border:none;font-weight:700;padding:10px 13px;border-radius:10px;margin-bottom:4px}
+
+.main{padding:36px 44px}
+.view{display:none}.view.active{display:block}
+
+/* ---- PACK view ---- */
+#pack-view.active{min-height:calc(100vh - 72px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center}
+.pack-eyebrow{font:500 10px "DM Mono";letter-spacing:.32em;text-transform:uppercase;color:var(--or);opacity:.8}
+.pack-wrap{position:relative;width:248px;height:370px;perspective:1400px}
+.pack{position:absolute;inset:0;border-radius:20px;cursor:pointer;
+  background:linear-gradient(145deg,#1e1630,#110d1e 65%);
+  border:1px solid rgba(232,196,122,.3);
+  box-shadow:0 36px 70px -28px rgba(0,0,0,.95), inset 0 1px 0 rgba(255,255,255,.05), 0 0 60px -20px rgba(201,124,219,.15);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:28px 20px;overflow:hidden;
+  animation:float 5.5s ease-in-out infinite;transition:transform .3s}
+.pack:hover{transform:translateY(-6px) scale(1.015)}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-0.8deg)}50%{transform:translateY(-10px) rotate(0.8deg)}}
+.pack::before{content:"";position:absolute;top:-60%;left:-30%;width:55%;height:220%;
+  background:linear-gradient(108deg,transparent,rgba(245,223,160,.14),transparent);transform:rotate(8deg);animation:sweep 4.5s ease-in-out infinite}
+@keyframes sweep{0%,100%{left:-40%}50%{left:120%}}
+.pack .seal{font:500 9px/1.4 "DM Mono";letter-spacing:.3em;text-transform:uppercase;color:var(--or);opacity:.7}
+.pack .crest{font-size:80px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.pack .ptitle{font:700 28px/1 "Cormorant Garamond";font-style:italic}
+.pack .psub{font:400 12.5px "DM Sans";color:var(--parchemin-dim);margin-top:-2px}
+.pack .ribbon{position:absolute;bottom:0;left:0;right:0;height:48px;background:linear-gradient(180deg,transparent,rgba(232,196,122,.1));border-top:1px solid rgba(232,196,122,.2);display:grid;place-items:center;font:500 9px "DM Mono";letter-spacing:.22em;text-transform:uppercase;color:var(--or)}
+.pack-glow{position:absolute;inset:-30px;border-radius:40px;background:radial-gradient(circle,rgba(201,124,219,.18),transparent 65%);filter:blur(12px);z-index:-1}
+.odds{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font:500 11px "DM Sans";color:var(--parchemin-dim);padding:5px 11px;border-radius:100px;border:1px solid var(--ligne);background:var(--ardoise)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cta{padding:14px 36px;border-radius:12px;background:linear-gradient(180deg,var(--or-bright),var(--or));color:#2a1d04;font:700 15px "DM Sans";box-shadow:0 14px 32px -12px rgba(232,196,122,.65);transition:transform .12s}
+.cta:hover{transform:translateY(-2px)}.cta:active{transform:translateY(1px) scale(.99)}
+.cta.locked{background:var(--ardoise2);color:var(--parchemin-dim);box-shadow:none;border:1px solid var(--ligne);cursor:default}
+.cta.locked:hover{transform:none}
+.cta-sub{font:400 12.5px "DM Sans";color:var(--parchemin-dim)}
+
+/* ---- GALERIE (remplace carte) ---- */
+#galerie-view.active{display:flex;flex-direction:column;gap:14px;min-height:calc(100vh - 72px)}
+.galerie-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.galerie-head h1{font:700 28px "Cormorant Garamond";font-style:italic;margin:0}
+.galerie-count{font:500 12px "DM Mono";letter-spacing:.08em;color:var(--parchemin-dim)}
+.galerie-count b{color:var(--or)}
+.galerie-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.galerie-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;flex:1;padding-bottom:40px}
+.gitem{border-radius:14px;overflow:hidden;background:var(--ardoise);border:1px solid var(--ligne);cursor:pointer;transition:.2s;position:relative}
+.gitem.owned{border-color:color-mix(in srgb,var(--rc) 45%,transparent);box-shadow:0 0 24px -14px color-mix(in srgb,var(--rc) 70%,transparent)}
+.gitem.owned:hover{transform:translateY(-3px) scale(1.015)}
+.gitem .gart{height:140px;display:grid;place-items:center;font-size:72px;background:radial-gradient(120% 120% at 30% 10%,color-mix(in srgb,var(--rc,#888) 25%,var(--ardoise2)) 0%,var(--ardoise) 70%)}
+.gitem.locked .gart{filter:grayscale(1);opacity:.22}
+.gitem .ginfo{padding:12px 13px 13px}
+.gitem .gtitle{font:600 14.5px/1.1 "Cormorant Garamond";font-style:italic;color:var(--parchemin-dim)}
+.gitem.owned .gtitle{color:var(--parchemin)}
+.gitem .gmeta{font:500 10px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:var(--parchemin-dim);margin-top:5px;display:flex;gap:6px;flex-wrap:wrap}
+.gitem .grar{color:var(--rc,#888)}
+.gitem.locked .gtitle{color:var(--parchemin-dim)}
+.gitem .gdupe{position:absolute;top:9px;right:9px;font:700 9px "DM Mono";background:rgba(8,6,12,.75);border:1px solid color-mix(in srgb,var(--rc) 60%,transparent);color:var(--rc);border-radius:6px;padding:3px 7px}
+.empty-galerie{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--parchemin-dim)}
+.empty-galerie .em{font-size:48px;margin-bottom:12px}
+.empty-galerie p{font:400 14px "DM Sans";line-height:1.6}
+
+/* modal détail œuvre */
+.omodal{position:fixed;inset:0;z-index:2200;display:none;place-items:center}
+.omodal.on{display:grid}
+.omodal .bg{position:absolute;inset:0;background:rgba(4,3,8,.8);backdrop-filter:blur(8px)}
+.opanel{position:relative;width:min(480px,94vw);background:var(--ardoise);border:1px solid var(--ligne);border-radius:18px;padding:0;overflow:hidden;box-shadow:0 40px 90px -30px #000;display:flex;flex-direction:column}
+.opanel .oart{height:210px;display:grid;place-items:center;font-size:96px;background:radial-gradient(140% 140% at 30% 10%,color-mix(in srgb,var(--rc) 35%,var(--ardoise2)) 0%,var(--ardoise) 70%)}
+.opanel .obody{padding:22px 24px 24px;display:flex;flex-direction:column;gap:8px}
+.opanel .otop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.opanel .orar{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:100px;background:rgba(8,6,12,.5);border:1px solid color-mix(in srgb,var(--rc) 50%,transparent);font:600 10px "DM Mono";letter-spacing:.16em;text-transform:uppercase;color:var(--rc)}
+.opanel .onom{font:700 26px/1 "Cormorant Garamond";font-style:italic}
+.opanel .oartiste{font:500 13px "DM Sans";color:var(--parchemin-dim)}
+.opanel .onote{font:400 14px/1.55 "Cormorant Garamond";color:var(--parchemin);opacity:.9;border-top:1px solid var(--ligne);padding-top:12px;font-style:italic}
+.opanel .ometa{font:500 11px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:var(--parchemin-dim);display:flex;gap:10px;flex-wrap:wrap}
+.opanel .oclose{margin-top:4px;align-self:flex-end;background:var(--ardoise2);border:1px solid var(--ligne);color:var(--parchemin-dim);border-radius:8px;padding:9px 16px;font:500 12px "DM Sans";cursor:pointer}
+.opanel .oclose:hover{color:var(--parchemin)}
+
+/* ---- COLLECTION ---- */
+.col-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:18px;flex-wrap:wrap}
+.col-head h1{font:700 32px "Cormorant Garamond";font-style:italic;margin:0}
+.col-head .pct{font:700 36px "Cormorant Garamond";color:var(--or);line-height:1}
+.col-head .pct small{font:500 11px "DM Sans";color:var(--parchemin-dim)}
+.progress{height:5px;border-radius:5px;background:var(--ardoise2);overflow:hidden;margin-bottom:20px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--or));transition:width .6s}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.filters{display:flex;gap:7px;flex-wrap:wrap}
+.chip{white-space:nowrap;padding:7px 13px;border-radius:100px;background:var(--ardoise);border:1px solid var(--ligne);font:500 11px "DM Sans";letter-spacing:.03em;color:var(--parchemin-dim);transition:.2s;cursor:pointer}
+.chip:hover{color:var(--parchemin)}
+.chip.on{background:var(--parchemin);color:var(--encre);border-color:var(--parchemin)}
+.search{margin-left:auto;background:var(--ardoise);border:1px solid var(--ligne);border-radius:100px;padding:8px 15px;color:var(--parchemin);font:400 13px "DM Sans";width:210px;outline:none}
+.search::placeholder{color:var(--parchemin-dim)}
+.search:focus{border-color:rgba(232,196,122,.4)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:13px;padding-bottom:40px}
+.cell{position:relative;border-radius:12px;overflow:hidden;background:var(--ardoise);--rc:var(--r-commun);border:1px solid var(--ligne);padding:13px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .15s;cursor:pointer}
+.cell.have{border-color:color-mix(in srgb,var(--rc) 50%,transparent);box-shadow:0 0 20px -12px color-mix(in srgb,var(--rc) 75%,transparent)}
+.cell.have:hover{transform:translateY(-3px)}
+.cell .topline{height:2px;border-radius:2px;background:var(--rc);width:28px;opacity:0;margin-bottom:7px}
+.cell.have .topline{opacity:1}
+.cell .ce{font-size:32px;filter:grayscale(1);opacity:.2;line-height:1}
+.cell.have .ce{filter:none;opacity:1}
+.cell .cn{font:600 14px/1.05 "Cormorant Garamond";font-style:italic;color:var(--parchemin-dim);margin-top:7px}
+.cell.have .cn{color:var(--parchemin)}
+.cell .cmeta{font:500 9px "DM Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--parchemin-dim);margin-top:4px;display:flex;gap:7px;flex-wrap:wrap}
+.cell .rb{color:var(--rc)}
+.cell .dupe{position:absolute;top:9px;right:9px;font:700 9px "DM Mono";background:rgba(8,6,12,.7);border:1px solid color-mix(in srgb,var(--rc) 60%,transparent);color:var(--rc);border-radius:6px;padding:2px 6px}
+.cell.locked-c .cn{color:var(--parchemin-dim)}
+
+/* ---- CARTE (flip) ---- */
+.card{position:relative;width:100%;aspect-ratio:5/7;border-radius:20px;overflow:hidden;background:var(--ardoise);transform-style:preserve-3d;will-change:transform;--rc:var(--r-commun);
+  border:1px solid color-mix(in srgb,var(--rc) 50%, transparent);
+  box-shadow:0 24px 52px -20px #000, 0 0 0 1px rgba(255,255,255,.02) inset, 0 0 40px -10px color-mix(in srgb,var(--rc) 55%, transparent)}
+.card .art{position:absolute;top:0;left:0;right:0;height:52%;background:radial-gradient(120% 120% at 30% 10%, color-mix(in srgb,var(--rc) 38%, var(--ardoise2)) 0%, var(--ardoise) 70%);display:grid;place-items:center;font-size:88px;border-bottom:1px solid color-mix(in srgb,var(--rc) 35%, transparent)}
+.card .art .emoji{filter:drop-shadow(0 8px 16px rgba(0,0,0,.5));transform:translateZ(30px)}
+.card .holo{position:absolute;inset:0;pointer-events:none;mix-blend-mode:color-dodge;opacity:0;background:linear-gradient(115deg,transparent 28%,rgba(255,255,255,.5) 46%,rgba(180,120,255,.4) 50%,rgba(255,200,120,.35) 54%,transparent 72%);background-size:220% 220%;transition:opacity .4s}
+.card[data-foil="1"] .holo{opacity:.5;animation:foilsweep 3.2s linear infinite}
+@keyframes foilsweep{0%{background-position:0% 0%}100%{background-position:200% 200%}}
+.card .corner{position:absolute;top:13px;left:13px;right:13px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.rar{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:100px;background:rgba(8,6,12,.65);backdrop-filter:blur(6px);border:1px solid color-mix(in srgb,var(--rc) 55%, transparent);font:600 9px "DM Mono";letter-spacing:.18em;text-transform:uppercase;color:var(--rc)}
+.rar .gem{width:7px;height:7px;border-radius:2px;transform:rotate(45deg);background:var(--rc);box-shadow:0 0 7px var(--rc)}
+.rate{font:700 12px "DM Sans";color:var(--or);text-shadow:0 0 10px rgba(232,196,122,.4);text-align:right}
+.rate small{display:block;font:500 8.5px "DM Mono";color:var(--parchemin-dim);letter-spacing:.05em}
+.card .body{position:absolute;left:0;right:0;bottom:0;height:48%;padding:14px 16px 16px;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;z-index:2;background:linear-gradient(0deg,rgba(8,6,12,.85) 0%,transparent 100%)}
+.card .nom{font:700 clamp(16px,2.4vw,22px)/1.02 "Cormorant Garamond";font-style:italic;letter-spacing:-.01em}
+.card .meta{font:500 9.5px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:var(--parchemin-dim)}
+.card .note{font:400 clamp(10px,1.4vw,12px)/1.35 "Cormorant Garamond";font-style:italic;color:var(--parchemin);opacity:.8}
+.card.back .art,.card.back .body,.card.back .corner{opacity:0}
+.card.back{background:linear-gradient(150deg,#1e1630,#110d1e);display:grid;place-items:center}
+.card.back::after{content:"";position:absolute;inset:14px;border:1px solid rgba(232,196,122,.15);border-radius:12px}
+.cardback-mark{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
+.cardback-mark span{font:700 46px "Cormorant Garamond";font-style:italic;color:rgba(232,196,122,.2)}
+
+/* ---- STAGE ---- */
+.fdiv{width:1px;height:20px;background:var(--ligne);align-self:center}
+#stage{position:fixed;inset:0;z-index:1500;display:none;background:linear-gradient(to top,rgba(6,4,12,.95) 0%,rgba(6,4,12,.6) 22%,rgba(6,4,12,.14) 44%,transparent 60%)}
+#stage.on{display:grid;align-items:end;justify-items:center}
+.flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:1600}
+.flash.go{animation:flash .5s ease-out}
+@keyframes flash{0%{opacity:0}12%{opacity:.75}100%{opacity:0}}
+.reveal{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 22px 38px;width:100%}
+.r-title{font:700 28px "Cormorant Garamond";font-style:italic}
+.r-hint{font:400 12.5px "DM Sans";color:var(--parchemin-dim);margin-top:-7px}
+.deck-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;width:min(1040px,95vw)}
+.r-foot{display:flex;flex-direction:column;align-items:center;gap:13px;margin-top:8px}
+.r-btns{display:flex;gap:11px;flex-wrap:wrap;justify-content:center}
+.cta.ghost{background:var(--ardoise2);color:var(--parchemin);border:1px solid var(--ligne);box-shadow:none}
+.cta.ghost:hover{border-color:rgba(232,196,122,.4)}
+.eclat-won{font:700 18px "Cormorant Garamond";color:var(--or);display:flex;align-items:center;gap:8px}
+.spark{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:1600}
+.flip{width:min(172px,17vw);min-width:124px;aspect-ratio:5/7;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.7,.2,1);cursor:pointer}
+.flip.shown{transform:rotateY(180deg)}
+.flip:not(.shown):hover{transform:translateY(-8px)}
+.flip.shown:hover{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face.rear{transform:rotateY(180deg)}
+.back-card{position:absolute;inset:0;border-radius:16px;background:linear-gradient(150deg,#1e1630,#110d1e);display:grid;place-items:center;border:1px solid var(--ligne);transition:box-shadow .25s,border-color .25s}
+.back-card::after{content:"";position:absolute;inset:11px;border:1px solid rgba(232,196,122,.13);border-radius:10px}
+.flip:not(.shown):hover .back-card{border-color:color-mix(in srgb,var(--rc) 65%,transparent);box-shadow:0 0 44px -6px var(--rc),0 18px 32px -16px #000}
+.back-card .bmark{font:700 36px "Cormorant Garamond";font-style:italic;color:rgba(232,196,122,.2)}
+.back-card .brar{position:absolute;bottom:13px;left:0;right:0;text-align:center;font:600 8px "DM Mono";letter-spacing:.18em;text-transform:uppercase;color:var(--rc);opacity:0;transition:opacity .25s}
+.flip:not(.shown):hover .back-card .brar{opacity:1}
+.flip[data-rar="epique"] .back-card{box-shadow:0 0 18px -12px var(--r-epique)}
+.flip[data-rar="legendaire"] .back-card{animation:legpulse 2.4s ease-in-out infinite}
+@keyframes legpulse{0%,100%{box-shadow:0 0 20px -10px var(--r-legendaire)}50%{box-shadow:0 0 42px -3px var(--r-legendaire)}}
+.flip .card{border-radius:16px}
+.flip .card .art{font-size:clamp(36px,6.5vw,58px)}
+.flip .card .corner{top:10px;left:10px;right:10px}
+.flip .card .rar{padding:4px 8px;font-size:8px}
+.flip .card .rate{font-size:10px}.flip .card .rate small{font-size:7.5px}
+.flip .card .body{padding:10px 12px 12px;gap:3px}
+.flip .card .nom{font-size:clamp(14px,2vw,18px)}
+.flip .card .meta{font-size:8.5px}
+.flip .card .note{font-size:clamp(9px,1.4vw,11px)}
+
+/* vanish anim */
+@keyframes vanish{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.92)}}
+.flip.vanish{animation:vanish .32s ease forwards}
+
+/* ---- BOUTIQUE ---- */
+.shop-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.shop-head h1{font:700 32px "Cormorant Garamond";font-style:italic;margin:0}
+.shop-head .sub{font:400 13px "DM Sans";color:var(--parchemin-dim);margin-top:3px}
+.shop-head .bal{display:flex;align-items:center;gap:6px;font:600 18px "Cormorant Garamond"}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:14px;padding-bottom:40px}
+.shop-card{position:relative;background:var(--ardoise);border:1px solid color-mix(in srgb,var(--rc) 40%,var(--ligne));border-radius:14px;padding:18px 16px 14px;display:flex;flex-direction:column;gap:9px;transition:.2s;--rc:var(--r-commun)}
+.shop-card:hover{transform:translateY(-2px)}
+.shop-card .topl{height:2px;width:26px;border-radius:2px;background:var(--rc);margin-bottom:2px}
+.shop-card .sart{font-size:44px;line-height:1}
+.shop-card .sn{font:600 15px/1.1 "Cormorant Garamond";font-style:italic}
+.shop-card .sm{font:500 9.5px "DM Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--parchemin-dim);display:flex;gap:7px;flex-wrap:wrap}
+.shop-card .rb{color:var(--rc)}
+.shop-card .owned{position:absolute;top:11px;right:11px;font:500 9px "DM Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--or);background:rgba(232,196,122,.08);border:1px solid rgba(232,196,122,.25);border-radius:6px;padding:2px 7px}
+.buy{padding:9px;border-radius:9px;background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 60%,#fff 10%),var(--rc));color:#fff;font:600 12px "DM Sans";width:100%;transition:.15s;box-shadow:0 6px 18px -8px var(--rc)}
+.buy:hover{filter:brightness(1.1)}
+.buy.no{background:var(--ardoise2);color:var(--parchemin-dim);box-shadow:none;border:1px solid var(--ligne);cursor:default}
+
+/* ---- settings sheet ---- */
+.sheet{position:fixed;inset:0;z-index:2000;display:none}
+.sheet.on{display:grid;place-items:center}
+.sheet .bg{position:absolute;inset:0;background:rgba(4,3,8,.75);backdrop-filter:blur(6px)}
+.panel{position:relative;width:min(400px,93vw);background:var(--ardoise);border:1px solid var(--ligne);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 36px 80px -28px #000}
+.panel h3{font:700 20px "Cormorant Garamond";font-style:italic;margin:0}
+.panel p{font:400 13px "DM Sans";color:var(--parchemin-dim);margin:0;line-height:1.5}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.row .lab{font:600 13px "DM Sans"}
+.row .desc{font:400 11px "DM Sans";color:var(--parchemin-dim)}
+.toggle{width:42px;height:24px;border-radius:100px;background:var(--ardoise2);border:1px solid var(--ligne);position:relative;cursor:pointer;transition:.25s}
+.toggle i{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--parchemin-dim);transition:.25s}
+.toggle.on{background:var(--or);border-color:var(--or)}
+.toggle.on i{left:21px;background:#2a1d04}
+.danger{padding:10px;border-radius:10px;background:rgba(200,60,60,.08);border:1px solid rgba(200,60,60,.2);color:#e07070;font:500 13px "DM Sans";width:100%}
+.danger:hover{background:rgba(200,60,60,.14)}
+.acct{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--ligne);padding-top:14px;margin-top:4px}
+.acct .lab{font:600 11px "DM Mono";letter-spacing:.12em;text-transform:uppercase}
+.acct input{background:var(--ardoise2);border:1px solid var(--ligne);border-radius:9px;padding:9px 12px;color:var(--parchemin);font:400 13px "DM Sans";outline:none}
+.acct input:focus{border-color:rgba(232,196,122,.4)}
+.acct .cta{padding:10px;width:100%}
+.acct .desc{font:400 11px "DM Sans";color:var(--parchemin-dim);line-height:1.4}
+
+/* ---- friend modal ---- */
+.modal{position:fixed;inset:0;z-index:2100;display:none;place-items:center}
+.modal.on{display:grid}
+.modal .bg{position:absolute;inset:0;background:rgba(6,5,10,.75);backdrop-filter:blur(5px)}
+.mpanel{position:relative;width:min(420px,92vw);background:var(--ardoise);border:1px solid var(--ligne);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:13px;box-shadow:0 36px 80px -28px #000}
+.mpanel h3{font:700 20px "Cormorant Garamond";font-style:italic;margin:0}
+.mpanel p{font:400 13px "DM Sans";color:var(--parchemin-dim);margin:0}
+.invite-link,.add-friend{display:flex;gap:8px}
+.mpanel input{flex:1;min-width:0;background:var(--ardoise2);border:1px solid var(--ligne);border-radius:9px;padding:10px 12px;color:var(--parchemin);font:400 13px "DM Sans";outline:none}
+.mpanel input:focus{border-color:rgba(232,196,122,.4)}
+.mpanel .cta{padding:10px 14px;white-space:nowrap}
+.friend-list{display:flex;flex-direction:column;gap:7px;max-height:180px;overflow:auto}
+.friend-item{display:flex;align-items:center;justify-content:space-between;background:var(--ardoise2);border:1px solid var(--ligne);border-radius:9px;padding:8px 12px;font:500 13px "DM Sans"}
+.friend-item .rm{color:var(--parchemin-dim);font-size:17px;cursor:pointer;line-height:1}
+.friend-empty{font:400 12px "DM Sans";color:var(--parchemin-dim);text-align:center;padding:8px}
+.modal-close{background:none;border:1px solid var(--ligne);color:var(--parchemin-dim);border-radius:9px;padding:9px;font:500 12px "DM Sans";margin-top:2px;cursor:pointer}
+</style>
+
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="kick">Œuvres du Quotidien</div><div class="name">Le Musée</div></div>
+    <nav class="nav">
+      <button class="navbtn on" data-tab="galerie-view"><span class="ic">🖼️</span> Galerie</button>
+      <button class="navbtn" data-tab="pack-view"><span class="ic">🎴</span> Pack du jour</button>
+      <button class="navbtn" data-tab="shop-view"><span class="ic">🛒</span> Boutique</button>
+      <button class="navbtn" data-tab="collection-view"><span class="ic">📖</span> Collection</button>
+    </nav>
+    <div class="eclat-card"><div class="lab">Mes éclats</div><div class="val"><span>✨</span><span id="eclatN">0</span></div></div>
+    <div class="streak-card"><div class="lab">🔥 Série en cours</div><div class="val"><b id="streakN">0</b> <span id="streakU">jour</span></div></div>
+    <button class="sidebtn invite" id="inviteBtn">🔗 Inviter un ami</button>
+    <button class="sidebtn" id="settingsBtn">⚙ Réglages</button>
+  </aside>
+
+  <main class="main">
+    <!-- GALERIE -->
+    <section class="view active" id="galerie-view">
+      <div class="galerie-head">
+        <h1>Ma Galerie</h1>
+        <div class="galerie-count"><b id="gownedN">0</b> / <span id="gtotalN">0</span> œuvres découvertes</div>
+      </div>
+      <div class="galerie-filter-row" id="gfilters"></div>
+      <div class="galerie-grid" id="galerieGrid"></div>
+    </section>
+
+    <!-- PACK -->
+    <section class="view" id="pack-view">
+      <div class="pack-eyebrow">Pack quotidien</div>
+      <div class="pack-wrap">
+        <div class="pack-glow"></div>
+        <div class="pack" id="packCard">
+          <div class="seal">Tirage du jour</div>
+          <div class="crest">🎨</div>
+          <div><div class="ptitle">L'Atelier</div><div class="psub">5 œuvres à découvrir</div></div>
+          <div class="ribbon">Tirer le pack</div>
+        </div>
+      </div>
+      <div class="odds" id="odds"></div>
+      <button class="cta" id="openBtn">🎴 Ouvrir un pack</button>
+      <div class="cta-sub" id="pack-wait" style="display:none">⏳ Prochain pack dans <b id="packCountdown">00:00:00</b></div>
+    </section>
+
+    <!-- BOUTIQUE -->
+    <section class="view" id="shop-view">
+      <div class="shop-head">
+        <div><h1>Boutique</h1><div class="sub">Stock du jour · se renouvelle dans <span id="shopCountdown">00:00:00</span></div></div>
+        <div class="bal"><span>✨</span> <span id="eclatN2">0</span></div>
+      </div>
+      <div class="shop-grid" id="shop"></div>
+    </section>
+
+    <!-- COLLECTION -->
+    <section class="view" id="collection-view">
+      <div class="col-head">
+        <h1>Collection</h1>
+        <div class="stat"><div class="pct"><span id="pctN">0</span><small>%</small></div>
+          <div style="font:500 11px 'DM Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--parchemin-dim)"><span id="ownedN">0</span> / <span id="totalN">0</span> œuvres</div></div>
+      </div>
+      <div class="progress"><i id="bar" style="width:0"></i></div>
+      <div class="toolbar">
+        <div class="filters" id="filters"></div>
+        <div class="fdiv"></div>
+        <div class="filters" id="ownfilters"></div>
+        <input class="search" id="search" placeholder="Rechercher une œuvre…">
+      </div>
+      <div class="grid" id="dex"></div>
+    </section>
+  </main>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<!-- Stage tirage -->
+<div id="stage">
+  <div class="reveal">
+    <div class="r-title">Ton pack du jour</div>
+    <div class="r-hint">Clique sur chaque carte pour découvrir l'œuvre</div>
+    <div class="deck-row" id="deck"></div>
+    <div class="r-foot">
+      <div class="eclat-won" id="eclatWon"></div>
+      <div class="r-btns">
+        <button class="cta ghost" id="revealAll">Tout révéler</button>
+        <button class="cta" id="doneBtn" style="display:none">Terminer · récupérer les ✨</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal détail œuvre -->
+<div class="omodal" id="omodal">
+  <div class="bg" id="omodalBg"></div>
+  <div class="opanel" id="opanel"></div>
+</div>
+
+<!-- Settings sheet -->
+<div class="sheet" id="sheet">
+  <div class="bg" id="sheetBg"></div>
+  <div class="panel">
+    <h3>Réglages</h3>
+    <p>Le pack se débloque chaque jour à minuit. Le mode démo permet de tirer en illimité.</p>
+    <div class="row"><div><div class="lab">Mode démo</div><div class="desc">Packs illimités pour tester</div></div><button class="toggle" id="demoToggle"><i></i></button></div>
+    <div class="acct">
+      <div class="lab">Mon compte</div>
+      <input id="accUser" placeholder="Nom d'utilisateur">
+      <input id="accMail" type="email" placeholder="E-mail">
+      <input id="accPass" type="password" placeholder="Mot de passe">
+      <button class="cta" id="accSave">Enregistrer</button>
+      <div class="desc">Stocké uniquement sur cet appareil.</div>
+    </div>
+    <button class="danger" id="resetBtn">Réinitialiser ma collection</button>
+  </div>
+</div>
+
+<!-- Friend modal -->
+<div class="modal" id="friendModal">
+  <div class="bg" id="friendBg"></div>
+  <div class="mpanel">
+    <h3>🔗 Inviter un ami</h3>
+    <p>Partage ton lien ou ajoute quelqu'un par nom d'utilisateur.</p>
+    <div class="invite-link"><input id="inviteLink" readonly><button class="cta ghost" id="copyLink">Copier</button></div>
+    <div class="add-friend"><input id="friendInput" placeholder="Nom d'utilisateur ou e-mail"><button class="cta" id="addFriend">Ajouter</button></div>
+    <div class="friend-list" id="friendList"></div>
+    <button class="modal-close" id="friendClose">Fermer</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA — 100 œuvres d'art
+// musee: lieu de conservation · mvt: mouvement · artist: artiste
+// ============================================================
+const DATA = [
+// ── LÉGENDAIRES ──
+{id:"joconde",nom:"La Joconde",artist:"Léonard de Vinci",musee:"Louvre",mvt:"Renaissance",emoji:"👸",rar:"legendaire",annee:"v. 1503",note:"Le sourire le plus énigmatique de l'histoire de l'art. Derrière le vernis jauni se cache un sfumato à l'huile d'une précision inégalée."},
+{id:"nuit_etoilee",nom:"La Nuit étoilée",artist:"Van Gogh",musee:"MoMA (New York)",mvt:"Post-impressionnisme",emoji:"🌙",rar:"legendaire",annee:"1889",note:"Peint depuis la fenêtre de l'asile de Saint-Rémy. Les tourbillons du ciel sont presque scientifiques — Van Gogh captait la turbulence avant que la physique la nomme."},
+{id:"creation_adam",nom:"La Création d'Adam",artist:"Michel-Ange",musee:"Chapelle Sixtine",mvt:"Renaissance",emoji:"✋",rar:"legendaire",annee:"1512",note:"L'espace entre les deux doigts est le plus célèbre centimètre de l'histoire de l'art. Michel-Ange a peint ce plafond allongé sur le dos, en quatre ans."},
+{id:"guernica",nom:"Guernica",artist:"Picasso",musee:"Museo Reina Sofía",mvt:"Cubisme",emoji:"🕊️",rar:"legendaire",annee:"1937",note:"Trois mètres cinquante de haut, sept mètres soixante de large, zéro couleur. La bombe nazie sur une ville basque, transcrite en cri politique."},
+{id:"menines",nom:"Las Meninas",artist:"Velázquez",musee:"Prado",mvt:"Baroque",emoji:"👗",rar:"legendaire",annee:"1656",note:"La peinture regarde celui qui la regarde. Velázquez s'est glissé dans la toile, pinceau en main, et a renversé la question du regard pour toujours."},
+{id:"nympheas",nom:"Les Nymphéas",artist:"Monet",musee:"Orangerie, Paris",mvt:"Impressionnisme",emoji:"🌸",rar:"legendaire",annee:"1906–1926",note:"Deux salles ovales au cœur de Paris. Monet les a peints quand il était presque aveugle — ce qu'il ne voyait plus clairement, il le sentait."},
+{id:"venus_milo",nom:"Vénus de Milo",artist:"Anonyme",musee:"Louvre",mvt:"Antiquité grecque",emoji:"🏛️",rar:"legendaire",annee:"v. −130",note:"Découverte en 1820 sur l'île de Mélos. Ses bras ont disparu avant qu'on la trouve — ce manque est peut-être sa plus grande force."},
+{id:"sistine_plafond",nom:"Jugement dernier",artist:"Michel-Ange",musee:"Chapelle Sixtine",mvt:"Renaissance",emoji:"⚖️",rar:"legendaire",annee:"1541",note:"Michel-Ange avait 60 ans quand il l'a peint. Il s'y est représenté en peau écorchée, tenue par Saint Barthélemy — autoportrait en martyr."},
+
+// ── ÉPIQUES ──
+{id:"radeau_meduse",nom:"Le Radeau de la Méduse",artist:"Géricault",musee:"Louvre",mvt:"Romantisme",emoji:"🚢",rar:"epique",annee:"1819",note:"Un scandale d'État transformé en peinture monumentale. Géricault a étudié des cadavres pour rendre la mort exacte."},
+{id:"liberte",nom:"La Liberté guidant le peuple",artist:"Delacroix",musee:"Louvre",mvt:"Romantisme",emoji:"🇫🇷",rar:"epique",annee:"1830",note:"La Marianne au sein nu qui porte un fusil et un drapeau. Delacroix n'a pas participé à la révolution de juillet — il l'a peinte à la place."},
+{id:"dejeuner_herbe",nom:"Le Déjeuner sur l'herbe",artist:"Manet",musee:"Musée d'Orsay",mvt:"Réalisme",emoji:"🧺",rar:"epique",annee:"1863",note:"Refusé par le Salon officiel, exposé au Salon des Refusés. La femme nue regarde droit dans les yeux — c'est ça qui a choqué, pas la nudité."},
+{id:"olympia",nom:"Olympia",artist:"Manet",musee:"Musée d'Orsay",mvt:"Réalisme",emoji:"🌺",rar:"epique",annee:"1865",note:"Une courtisane nommée, regardant le spectateur sans ciller. La presse l'a comparée à de la boue. Aujourd'hui elle est au sommet des escaliers d'Orsay."},
+{id:"dancing",nom:"La Danse",artist:"Matisse",musee:"Ermitage, St-Pétersbourg",mvt:"Fauvisme",emoji:"💃",rar:"epique",annee:"1910",note:"Cinq silhouettes rouges sur un fond vert et bleu. Une joie brutale. Matisse a dit qu'il voulait que la couleur chante avant que l'œil analyse."},
+{id:"cri",nom:"Le Cri",artist:"Munch",musee:"Galerie nationale, Oslo",mvt:"Expressionnisme",emoji:"😱",rar:"epique",annee:"1893",note:"Il existe quatre versions. Munch a écrit dans son journal qu'une promenade au coucher du soleil lui avait donné l'impression que la nature criait."},
+{id:"starry_night",nom:"Terrasse du café le soir",artist:"Van Gogh",musee:"Kröller-Müller, Otterlo",mvt:"Post-impressionnisme",emoji:"☕",rar:"epique",annee:"1888",note:"Arles, une nuit de septembre 1888. La première peinture de Van Gogh représentant le ciel nocturne. Le bleu de minuit contre le jaune du gaz."},
+{id:"grande_jatte",nom:"Un dimanche à la Grande Jatte",artist:"Seurat",musee:"Art Institute, Chicago",mvt:"Pointillisme",emoji:"☂️",rar:"epique",annee:"1886",note:"Deux ans de travail, des millions de points. Seurat a inventé le pointillisme à 26 ans. Chaque touche est un pixel scientifique."},
+{id:"les_glaneuses",nom:"Les Glaneuses",artist:"Millet",musee:"Musée d'Orsay",mvt:"Réalisme",emoji:"🌾",rar:"epique",annee:"1857",note:"Trois paysannes courbées ramassent les restes de la moisson. Un tableau révolutionnaire qui montrait les pauvres avec la dignité des héros antiques."},
+{id:"bain_turc",nom:"Le Bain turc",artist:"Ingres",musee:"Louvre",mvt:"Néo-classicisme",emoji:"🛁",rar:"epique",annee:"1862",note:"Peint par Ingres à 82 ans, en format tondo — un cercle. Une masse de corps féminins dans un espace imaginaire. Son œuvre la plus étrange."},
+{id:"ciel_nuages",nom:"Sky Study with Clouds",artist:"Constable",musee:"Tate Britain",mvt:"Romantisme",emoji:"☁️",rar:"epique",annee:"1822",note:"Constable a passé des années à ne peindre que des ciels. Il voulait une météorologie de la peinture — des nuages documentés comme des faits."},
+{id:"waterlilies_blue",nom:"Nymphéas bleus",artist:"Monet",musee:"Musée d'Orsay",mvt:"Impressionnisme",emoji:"💙",rar:"epique",annee:"1916–1919",note:"Plus libre que les grands panneaux de l'Orangerie. Monet expérimentait. Le bleu presque abstrait annonce Rothko cinquante ans plus tôt."},
+{id:"composition_red",nom:"Composition en rouge",artist:"Mondrian",musee:"Centre Pompidou",mvt:"Néoplasticisme",emoji:"🟥",rar:"epique",annee:"1939",note:"Lignes noires et aplats primaires. Mondrian cherchait l'universel derrière le visible. Il a fui l'Europe pour New York en 1940 — et découvert le jazz."},
+{id:"demoiselles",nom:"Les Demoiselles d'Avignon",artist:"Picasso",musee:"MoMA",mvt:"Proto-cubisme",emoji:"🎭",rar:"epique",annee:"1907",note:"Un tableau-tremblement de terre. Cinq figures anguleuses et deux masques africains. Braque l'a vu et a failli vomir. Puis il a co-inventé le cubisme."},
+
+// ── RARES ──
+{id:"bal_moulin",nom:"Bal du moulin de la Galette",artist:"Renoir",musee:"Musée d'Orsay",mvt:"Impressionnisme",emoji:"🎪",rar:"rare",annee:"1876",note:"Une après-midi de danse à Montmartre. Renoir voulait peindre la joie ordinaire avec la même gravité que les grands sujets historiques."},
+{id:"grande_baigneuse",nom:"La Grande Baigneuse",artist:"Ingres",musee:"Louvre",mvt:"Néo-classicisme",emoji:"🤍",rar:"rare",annee:"1808",note:"Un dos parfait, sans visage. Ingres a peint le nu académique avec une précision froide qui le distingue de tous ses contemporains."},
+{id:"printemps_botticelli",nom:"Le Printemps",artist:"Botticelli",musee:"Offices, Florence",mvt:"Renaissance",emoji:"🌺",rar:"rare",annee:"v. 1478",note:"Neuf figures mythologiques dans une orangeraie sombre. Botticelli peint la renaissance de la nature — et celle des idées de Platon à Florence."},
+{id:"naissance_venus",nom:"La Naissance de Vénus",artist:"Botticelli",musee:"Offices, Florence",mvt:"Renaissance",emoji:"🐚",rar:"rare",annee:"v. 1484",note:"Vénus émerge de la mer sur une coquille. Le vent à gauche souffle, les fleurs tombent, et l'idéal de beauté de la Renaissance prend corps."},
+{id:"chasse_diana",nom:"La Chasse de Diane",artist:"Rubens",musee:"Prado",mvt:"Baroque",emoji:"🦌",rar:"rare",annee:"v. 1618",note:"Rubens a peint la vigueur et le mouvement comme personne. Ses corps ont de la masse, ses compositions ont de la vitesse."},
+{id:"caravage_judith",nom:"Judith décapitant Holopherne",artist:"Caravage",musee:"Galerie nationale, Rome",mvt:"Baroque",emoji:"⚔️",rar:"rare",annee:"v. 1599",note:"La lumière fracasse les ténèbres. Caravage invente le clair-obscur dramatique — il peint depuis la rue, avec des modèles pauvres."},
+{id:"fille_perle",nom:"La Fille à la perle",artist:"Vermeer",musee:"Mauritshuis, La Haye",mvt:"Baroque",emoji:"💎",rar:"rare",annee:"v. 1665",note:"Pas un portrait mais un «tronie» — une étude d'expression. La boucle d'oreille est peut-être en verre. Le regard, lui, est permanent."},
+{id:"nuit_de_garde",nom:"La Ronde de nuit",artist:"Rembrandt",musee:"Rijksmuseum, Amsterdam",mvt:"Baroque",emoji:"🌑",rar:"rare",annee:"1642",note:"La milice bourgeoise d'Amsterdam en mouvement. Rembrandt n'a pas peint une pose — il a peint le moment avant le départ."},
+{id:"dejeuner_canotiers",nom:"Déjeuner des canotiers",artist:"Renoir",musee:"Phillips Collection, Washington",mvt:"Impressionnisme",emoji:"🥂",rar:"rare",annee:"1881",note:"Ses amis à Chatou, sur la Seine. La femme au premier plan avec le chien deviendra sa femme. Renoir appelle ça «ma plus belle peinture»."},
+{id:"baigneuses",nom:"Les Grandes Baigneuses",artist:"Cézanne",musee:"Museum of Art, Philadelphie",mvt:"Post-impressionnisme",emoji:"🌊",rar:"rare",annee:"1906",note:"Le dernier grand projet de Cézanne. Il l'a retravaillé pendant sept ans. Les formes géométriques annoncent directement le cubisme de Picasso."},
+{id:"tir_orange",nom:"Orange sur tissu jaune",artist:"Matisse",musee:"Centre Pompidou",mvt:"Fauvisme",emoji:"🍊",rar:"rare",annee:"1919",note:"Une harmonie de jaunes. Matisse aimait peindre les objets ordinaires comme des problèmes de couleur à résoudre. L'orange est une note de musique."},
+{id:"persistance",nom:"La Persistance de la mémoire",artist:"Dalí",musee:"MoMA",mvt:"Surréalisme",emoji:"⏱️",rar:"rare",annee:"1931",note:"Peint en deux heures, dit Dalí. Les montres molles viennent d'un Camembert fondu au soleil. Petit format, impact planétaire."},
+{id:"impression_soleil",nom:"Impression, soleil levant",artist:"Monet",musee:"Marmottan, Paris",mvt:"Impressionnisme",emoji:"🌅",rar:"rare",annee:"1872",note:"Le tableau qui a donné son nom à l'impressionnisme — par moquerie. Le Havre au lever du soleil. Deux coups de pinceau orange, et l'histoire change."},
+{id:"saint_sebastien",nom:"Saint Sébastien",artist:"Mantegna",musee:"Louvre",mvt:"Renaissance",emoji:"🏹",rar:"rare",annee:"v. 1480",note:"Trois tableaux sur ce sujet, peints à des décennies d'écart. Mantegna traite l'anatomie comme une sculpture antique. Le corps souffre avec grâce."},
+{id:"degas_danseuse",nom:"La Petite Danseuse de 14 ans",artist:"Degas",musee:"Musée d'Orsay",mvt:"Impressionnisme",emoji:"🩰",rar:"rare",annee:"1881",note:"La sculpture la plus célèbre de Degas. La jupe est en tulle réel. La critique de l'époque l'a trouvée vulgaire. Elle est maintenant un symbole."},
+{id:"les_noces",nom:"Les Noces de Cana",artist:"Véronèse",musee:"Louvre",mvt:"Renaissance vénitienne",emoji:"🍷",rar:"rare",annee:"1563",note:"Le plus grand tableau du Louvre. Presque dix mètres de long. Le miracle de l'eau en vin est noyé dans un banquet vénitien somptueux."},
+{id:"man_ray_larmes",nom:"Les Larmes",artist:"Man Ray",musee:"Centre Pompidou",mvt:"Surréalisme",emoji:"💧",rar:"rare",annee:"1932",note:"Un œil, des larmes de verre photographiées. Man Ray transforme la douleur en objet précieux. L'émotion devient matière."},
+{id:"rothko_four",nom:"No. 61 (Rust and Blue)",artist:"Rothko",musee:"MOCA Los Angeles",mvt:"Expressionnisme abstrait",emoji:"🟦",rar:"rare",annee:"1953",note:"Les rectangles de Rothko ne sont pas faits pour être analysés — ils sont faits pour être ressentis. Il voulait que les gens pleurent devant ses toiles."},
+{id:"campbell_soup",nom:"Campbell's Soup Cans",artist:"Warhol",musee:"MoMA",mvt:"Pop Art",emoji:"🥫",rar:"rare",annee:"1962",note:"32 toiles, 32 saveurs. Warhol accrochait ces boîtes au supermarché du réel. «Si tu veux tout savoir sur moi, regarde la surface de mes peintures.»"},
+
+// ── COMMUNS ──
+{id:"watteau_pelerinage",nom:"Pèlerinage à l'île de Cythère",artist:"Watteau",musee:"Louvre",mvt:"Rococo",emoji:"🌿",rar:"commun",annee:"1717",note:"Le tableau qui a inventé la catégorie «fête galante» à l'Académie. Des couples se préparent à partir — ou à rester. L'ambiguïté est totale."},
+{id:"fragonard_balançoire",nom:"Les Hasards heureux de l'escarpolette",artist:"Fragonard",musee:"Wallace Collection",mvt:"Rococo",emoji:"🎀",rar:"commun",annee:"1767",note:"Un aristocrate commande un tableau où sa maîtresse est en balançoire — et où il peut voir sous sa robe. Fragonard l'a fait avec grâce."},
+{id:"david_couronnement",nom:"Le Sacre de Napoléon",artist:"David",musee:"Louvre",mvt:"Néo-classicisme",emoji:"👑",rar:"commun",annee:"1807",note:"Napoléon se couronne lui-même, Joséphine à genoux devant lui. David a retouché le visage de la mère de Napoléon — elle n'était pas là, mais a demandé à y figurer."},
+{id:"ingres_napoleon",nom:"Napoléon sur son trône",artist:"Ingres",musee:"Musée de l'Armée, Paris",mvt:"Néo-classicisme",emoji:"⚡",rar:"commun",annee:"1806",note:"La frontalité d'une icône byzantine. Ingres a peint l'Empire comme une religion. Ses contemporains ont trouvé le tableau bizarre — il l'est."},
+{id:"vermeer_laitiere",nom:"La Laitière",artist:"Vermeer",musee:"Rijksmuseum",mvt:"Baroque hollandais",emoji:"🥛",rar:"commun",annee:"v. 1660",note:"Le lait verse depuis trente secondes et versera pour toujours. Vermeer peint la lumière du matin filtrée par une fenêtre avec une patience de photographe."},
+{id:"hals_rieur",nom:"Le Joyeux Buveur",artist:"Frans Hals",musee:"Rijksmuseum",mvt:"Baroque hollandais",emoji:"🍺",rar:"commun",annee:"v. 1628",note:"Hals peint avec une rapidité que ses contemporains n'arrivent pas à croire. La touche est libre, le sourire est vivant — presque photographique."},
+{id:"corot_souvenir",nom:"Souvenir de Mortefontaine",artist:"Corot",musee:"Louvre",mvt:"Romantisme",emoji:"🌳",rar:"commun",annee:"1864",note:"Un matin brumeux dans un bois. Corot invente la peinture de paysage moderne — la lumière diffuse et les arbres tremblants sont les siens."},
+{id:"daumier_wagons",nom:"Le Wagon de 3e classe",artist:"Daumier",musee:"Musée d'Orsay",mvt:"Réalisme",emoji:"🚂",rar:"commun",annee:"1865",note:"Des voyageurs pauvres entassés. Daumier peint la condition sociale avec la même acuité que ses caricatures dans Le Charivari."},
+{id:"boudin_plage",nom:"Trouville, la plage",artist:"Boudin",musee:"Musée d'Orsay",mvt:"Réalisme",emoji:"🏖️",rar:"commun",annee:"1870",note:"Le maître de Monet. Boudin a le premier convaincu un jeune peintre normand de sortir peindre sur la côte. L'impressionnisme naît sur ces plages."},
+{id:"sisley_inondation",nom:"L'Inondation à Port-Marly",artist:"Sisley",musee:"Musée d'Orsay",mvt:"Impressionnisme",emoji:"🌊",rar:"commun",annee:"1876",note:"L'eau monte dans les rues. Sisley peint la catastrophe avec la même sérénité que le beau temps. Sa palette est la plus douce des impressionnistes."},
+{id:"pissarro_grands_boulevards",nom:"Les Grands Boulevards",artist:"Pissarro",musee:"Philadelphia Museum of Art",mvt:"Impressionnisme",emoji:"🚶",rar:"commun",annee:"1897",note:"Paris depuis une fenêtre d'hôtel. Pissarro avait des problèmes d'yeux — il ne pouvait plus peindre dehors. Alors il a peint la ville d'en haut."},
+{id:"cassatt_loge",nom:"Dans la loge",artist:"Mary Cassatt",musee:"Museum of Fine Arts, Boston",mvt:"Impressionnisme",emoji:"🎭",rar:"commun",annee:"1878",note:"Une femme regarde à la lorgnette — et un homme la regarde avec la sienne. Cassatt retourne le regard masculin avec une ironie discrète."},
+{id:"morisot_berceau",nom:"Le Berceau",artist:"Berthe Morisot",musee:"Musée d'Orsay",mvt:"Impressionnisme",emoji:"👶",rar:"commun",annee:"1872",note:"Sa sœur Edma et son bébé. Morisot peint l'intime avec une légèreté de touche que Manet admirait ouvertement. C'est elle qui lui a appris la fluidité."},
+{id:"manet_fifre",nom:"Le Fifre",artist:"Manet",musee:"Musée d'Orsay",mvt:"Réalisme",emoji:"🎵",rar:"commun",annee:"1866",note:"Un jeune musicien militaire sur fond plat. Manet s'inspire de Velázquez et invente le portrait moderne. «Trop japonais» dit le jury du Salon."},
+{id:"courbet_vague",nom:"La Vague",artist:"Courbet",musee:"Musée d'Orsay",mvt:"Réalisme",emoji:"🌊",rar:"commun",annee:"1870",note:"La mer de Normandie, une vague qui se brise. Courbet a peint des dizaines de variantes. Il appliquait la peinture au couteau — la matière avant tout."},
+{id:"chasseriau_deux_soeurs",nom:"Les Deux Sœurs",artist:"Chassériau",musee:"Louvre",mvt:"Romantisme",emoji:"👩‍👧",rar:"commun",annee:"1843",note:"Ses deux sœurs, Adèle et Aline. Un portrait d'une tendresse inhabituelle, qui rappelle les primitifs italiens. Chassériau avait 24 ans."},
+{id:"delacroix_tigre",nom:"Tigre jouant avec une tortue",artist:"Delacroix",musee:"Louvre",mvt:"Romantisme",emoji:"🐅",rar:"commun",annee:"1862",note:"Delacroix fasciné par les animaux du jardin des plantes. Il y retournait chaque semaine pour observer la puissance animale — et la transposer en couleur."},
+{id:"vuillard_interieur",nom:"Intérieur, la mère",artist:"Vuillard",musee:"Musée d'Orsay",mvt:"Nabis",emoji:"🏠",rar:"commun",annee:"1893",note:"Sa mère cousant, absorbée dans les motifs du tissu et du papier peint. Vuillard fusionne les corps avec le décor — il appelle ça «intimisme»."},
+{id:"bonnard_salle_manger",nom:"La Salle à manger à Vernon",artist:"Bonnard",musee:"Musée d'Orsay",mvt:"Nabis",emoji:"🍽️",rar:"commun",annee:"1925",note:"Un intérieur baigné de jaune. Bonnard peint la chaleur de la maison depuis le souvenir — souvent des années après le moment vécu."},
+{id:"seurat_poudreuse",nom:"La Poudreuse",artist:"Seurat",musee:"Courtauld Gallery",mvt:"Pointillisme",emoji:"💄",rar:"commun",annee:"1889",note:"Sa compagne Madeleine Knoblock se poudrant. Un cadre dans le cadre, une couleur scientifique, une tendresse cachée sous les points."},
+{id:"signac_saint_tropez",nom:"Saint-Tropez, le port",artist:"Signac",musee:"Musée de l'Annonciade",mvt:"Pointillisme",emoji:"⛵",rar:"commun",annee:"1892",note:"Signac a découvert Saint-Tropez avant tout le monde. Il en a fait son port, sa lumière, son laboratoire de couleur — des années avant Matisse."},
+{id:"cross_iles_dor",nom:"Les Îles d'Or",artist:"Henri-Edmond Cross",musee:"Musée d'Orsay",mvt:"Pointillisme",emoji:"🏝️",rar:"commun",annee:"1892",note:"La côte varoise vue depuis les îles d'Hyères. Les touches multicolores vibrent comme une chaleur visible. Cross était l'ami de Signac — et son rival discret."},
+{id:"redon_cyclope",nom:"Le Cyclope",artist:"Redon",musee:"Kröller-Müller",mvt:"Symbolisme",emoji:"👁️",rar:"commun",annee:"v. 1914",note:"Un géant timide observe une nymphe endormie avec son œil unique. Redon peint le rêve avec la précision d'un botaniste — il était ami de Darwin."},
+{id:"moreau_salome",nom:"Salomé dansant",artist:"Gustave Moreau",musee:"Musée Gustave-Moreau, Paris",mvt:"Symbolisme",emoji:"💃",rar:"commun",annee:"1876",note:"La scène biblique transformée en opéra pictural. Moreau accumule les bijoux, les ornements, les textures — la peinture comme un trésor."},
+{id:"klimt_baiser",nom:"Le Baiser",artist:"Klimt",musee:"Belvédère, Vienne",mvt:"Symbolisme viennois",emoji:"💛",rar:"commun",annee:"1908",note:"Un couple enveloppé d'or. Klimt a utilisé de la feuille d'or réelle. Les robes s'entremêlent jusqu'à ce qu'on ne sache plus où l'un finit et l'autre commence."},
+{id:"schiele_autoportrait",nom:"Autoportrait aux membres contorsionnés",artist:"Schiele",musee:"Albertina, Vienne",mvt:"Expressionnisme",emoji:"🖤",rar:"commun",annee:"1910",note:"Schiele s'est peint sans peau protectrice — les corps sont des nœuds de tension. Arrêté et emprisonné pour obscénité à 21 ans."},
+{id:"kirchner_rue",nom:"Rue à Berlin",artist:"Kirchner",musee:"Neue Nationalgalerie",mvt:"Expressionnisme",emoji:"🌆",rar:"commun",annee:"1913",note:"La grande ville comme menace. Des femmes longues en manteau sombre, des rues qui écrasent. Kirchner peint l'anxiété urbaine dix ans avant qu'elle ait un nom."},
+{id:"kandinsky_compo",nom:"Composition VIII",artist:"Kandinsky",musee:"Guggenheim, New York",mvt:"Abstraction lyrique",emoji:"🎶",rar:"commun",annee:"1923",note:"Kandinsky voulait que la peinture soit comme de la musique — ressentie, pas lue. Il a enseigné au Bauhaus comment parler sans mots."},
+{id:"klee_angelus",nom:"Angelus Novus",artist:"Paul Klee",musee:"Musée d'Israël",mvt:"Expressionnisme",emoji:"👼",rar:"commun",annee:"1920",note:"Walter Benjamin l'a acheté pour quelques marks. Il y a vu l'ange de l'histoire — regardant les ruines du passé, emporté par le vent du progrès."},
+{id:"magritte_fils",nom:"Le Fils de l'homme",artist:"Magritte",musee:"Collection privée",mvt:"Surréalisme",emoji:"🎩",rar:"commun",annee:"1964",note:"Autoportrait avec une pomme. «Tout ce qu'on voit cache autre chose» dit Magritte. La pomme n'est pas un mystère — le mystère est derrière elle."},
+{id:"ernst_elephant",nom:"L'Éléphant de Célèbes",artist:"Max Ernst",musee:"Tate Modern",mvt:"Surréalisme",emoji:"🐘",rar:"commun",annee:"1921",note:"Une machine-éléphant dans un paysage sans contexte. Ernst avait vu une photo de silo à maïs soudanais — et son cerveau a fait le reste."},
+{id:"miro_constellations",nom:"Le Lever du soleil",artist:"Miró",musee:"Musée d'Art Moderne de Paris",mvt:"Surréalisme",emoji:"⭐",rar:"commun",annee:"1940",note:"La série des Constellations — peinte dans la peur, pendant l'exode de 1940. Miró répond à la terreur en inventant un alphabet céleste."},
+{id:"tanguy_journee",nom:"Jour de lenteur",artist:"Yves Tanguy",musee:"Centre Pompidou",mvt:"Surréalisme",emoji:"🪨",rar:"commun",annee:"1937",note:"Un paysage impossible peuplé de formes molles et précises. Tanguy a appris à peindre seul après avoir vu un De Chirico dans une galerie."},
+{id:"de_chirico_rue",nom:"La Mélancolie et le mystère d'une rue",artist:"De Chirico",musee:"Collection privée",mvt:"Art métaphysique",emoji:"🏚️",rar:"commun",annee:"1914",note:"Une enfant roule un cerceau vers une ombre inconnue. De Chirico peint l'angoisse de l'attente — l'espace vide qui précède l'événement."},
+{id:"lautrec_moulin",nom:"Au Moulin Rouge",artist:"Toulouse-Lautrec",musee:"Art Institute, Chicago",mvt:"Post-impressionnisme",emoji:"🎠",rar:"commun",annee:"1892",note:"Lautrec s'est représenté au fond — petit, avec son chapeau. Il fréquentait le Moulin Rouge presque chaque soir. C'était son atelier."},
+{id:"gauguin_tahiti",nom:"Femmes de Tahiti",artist:"Gauguin",musee:"Musée d'Orsay",mvt:"Post-impressionnisme",emoji:"🌺",rar:"commun",annee:"1891",note:"Deux femmes sur une plage. Gauguin a fui Paris pour Tahiti — sa vision de l'île est mythifiée, mais sa couleur est une révolution."},
+{id:"pontormo_deposition",nom:"Déposition de croix",artist:"Pontormo",musee:"Santa Felicita, Florence",mvt:"Maniérisme",emoji:"🌀",rar:"commun",annee:"1528",note:"Les corps s'entremêlent dans une spirale de couleurs acides — rose, vert, bleu. Pontormo peint la douleur avec une beauté qui la rend presque insupportable."},
+{id:"el_greco_orgaz",nom:"L'Enterrement du comte d'Orgaz",artist:"El Greco",musee:"Iglesia de Santo Tomé, Tolède",mvt:"Maniérisme",emoji:"🕊️",rar:"commun",annee:"1588",note:"Le bas de la toile est naturaliste, le haut est mystique. El Greco étire les corps vers le ciel. Ses contemporains le trouvaient bizarre — nous, magnifique."},
+{id:"tiepolo_ciel",nom:"Allégorie de la Planète et des Continents",artist:"Tiepolo",musee:"Résidence de Würzburg",mvt:"Baroque tardif",emoji:"🌍",rar:"commun",annee:"1752",note:"Le plus grand plafond peint d'Europe, par le dernier grand peintre baroque. Tiepolo transforme le plafond en ciel ouvert."},
+{id:"chardin_bulle",nom:"La Bulle de savon",artist:"Chardin",musee:"Metropolitan Museum",mvt:"Rococo",emoji:"🫧",rar:"commun",annee:"v. 1733",note:"Un enfant souffle une bulle. Chardin peint la fragilité — l'objet ordinaire élevé à la dignité du symbole sans jamais le crier."},
+{id:"greuze_oiseau",nom:"La Jeune fille à l'oiseau mort",artist:"Greuze",musee:"Musée d'Orsay",mvt:"Néo-classicisme",emoji:"🐦",rar:"commun",annee:"1765",note:"Une jeune fille pleure son oiseau mort. Le tableau est un prétexte sentimental — Diderot l'aimait, Manet le trouvait ridicule. Les deux avaient raison."},
+{id:"hogarth_mariage",nom:"Le Mariage à la mode",artist:"Hogarth",musee:"National Gallery, Londres",mvt:"Rococo",emoji:"💍",rar:"commun",annee:"1745",note:"Six scènes satiriques d'un mariage aristocratique raté. Hogarth invente la bande dessinée morale — le cinéma du XVIIIe siècle."},
+{id:"goya_saturno",nom:"Saturne dévorant son fils",artist:"Goya",musee:"Prado",mvt:"Romantisme",emoji:"🌑",rar:"commun",annee:"1823",note:"Peint directement sur le mur de sa maison. Goya était vieux, sourd, seul. Cette œuvre n'était pas faite pour être montrée — elle l'a été après sa mort."},
+{id:"fuseli_cauchemar",nom:"Le Cauchemar",artist:"Fuseli",musee:"Institut des arts de Détroit",mvt:"Romantisme",emoji:"😈",rar:"commun",annee:"1781",note:"Un incube assis sur une femme endormie. Fuseli peint les rêves avec la même conviction que Blake peint les visions. La psychanalyse n'existe pas encore."},
+{id:"turner_pluie",nom:"Pluie, vapeur et vitesse",artist:"Turner",musee:"National Gallery",mvt:"Romantisme",emoji:"🚂",rar:"commun",annee:"1844",note:"Un train qui fonce sur le spectateur dans une tempête de couleur. Turner a passé la tête par la fenêtre d'un wagon pendant un orage. Pour voir."},
+{id:"friedrich_voyageur",nom:"Le Voyageur au-dessus de la mer de nuages",artist:"Friedrich",musee:"Kunsthalle Hamburg",mvt:"Romantisme",emoji:"🏔️",rar:"commun",annee:"1818",note:"Un homme de dos, au-dessus des nuages. La peinture du sublime romantique — l'homme face à une nature qui le dépasse et le fascine."},
+{id:"millais_ophelia",nom:"Ophélie",artist:"Millais",musee:"Tate Britain",mvt:"Préraphaélisme",emoji:"🌹",rar:"commun",annee:"1852",note:"Elizabeth Siddal a posé dans une baignoire froide pendant des mois. Elle est tombée malade. La rivière est peinte dans un champ du Surrey."},
+{id:"rossetti_proserpine",nom:"Proserpine",artist:"Rossetti",musee:"Tate Britain",mvt:"Préraphaélisme",emoji:"🍷",rar:"commun",annee:"1874",note:"Jane Morris en Proserpine, une grenade à la main. Rossetti et Jane avaient une relation qu'ils ne pouvaient pas nommer. Cette tension donne au tableau sa profondeur."},
+{id:"burne_jones_sommeil",nom:"Le Sommeil du roi Arthur",artist:"Burne-Jones",musee:"Galerie des beaux-arts de Puerto Rico",mvt:"Préraphaélisme",emoji:"🌙",rar:"commun",annee:"1881",note:"Arthur endormi, attendant son retour légendaire. Burne-Jones transforme la mythologie en rêve éveillé — ses couleurs viennent du vitrail."},
+{id:"sargent_madame_x",nom:"Portrait de Mme X",artist:"Sargent",musee:"Metropolitan Museum",mvt:"Belle Époque",emoji:"🖤",rar:"commun",annee:"1884",note:"Un scandale à Paris. La bretelle tombée était trop suggestive — Sargent l'a peinte relevée. Il a fui aux États-Unis. Elle est restée."},
+{id:"whistler_mere",nom:"Arrangement en gris et noir",artist:"Whistler",musee:"Musée d'Orsay",mvt:"Symbolisme",emoji:"🪑",rar:"commun",annee:"1871",note:"Le portrait de sa mère. Whistler refusait le titre «portrait» — c'est un «arrangement». Il voulait que la forme prime sur le sujet."},
+{id:"boldini_portrait",nom:"Mademoiselle de Nemidoff",artist:"Boldini",musee:"Musée des beaux-arts, Ferrare",mvt:"Belle Époque",emoji:"💐",rar:"commun",annee:"1908",note:"Les coups de pinceau de Boldini sont des éclairs. Ses modèles semblent toujours en mouvement, saisis au milieu d'une pirouette."},
+{id:"lacombe_gris",nom:"Femme aux cheveux roux",artist:"Lacombe",musee:"Musée d'Orsay",mvt:"Nabis",emoji:"🔴",rar:"commun",annee:"1896",note:"Un bois gravé aux contours épais, influence japonaise assumée. Lacombe est le moins connu des Nabis — et parmi les plus singuliers."},
+{id:"vallotton_nuit",nom:"La Nuit",artist:"Vallotton",musee:"Kunstmuseum, Berne",mvt:"Nabis",emoji:"🌃",rar:"commun",annee:"1893",note:"Un intérieur au clair de lune. Vallotton grave et peint avec la même économie radicale — pas un trait de trop. Le silence est une technique."},
+{id:"denis_muses",nom:"Les Muses",artist:"Maurice Denis",musee:"Musée d'Orsay",mvt:"Nabis",emoji:"🎨",rar:"commun",annee:"1893",note:"Des femmes dans un bois, entre rêve et décoration. Denis avait dit «un tableau est d'abord une surface plane recouverte de couleurs». Il l'a prouvé."},
+{id:"cross_femmes_bord",nom:"Femmes au bord de la mer",artist:"Cross",musee:"Musée d'Orsay",mvt:"Pointillisme",emoji:"🏖️",rar:"commun",annee:"1896",note:"Un décor méditerranéen baigné de points. La lumière du Var, le corps des femmes, la mer — tout vibre à la même fréquence."},
+{id:"redon_bouquet",nom:"Bouquet de fleurs",artist:"Redon",musee:"Musée d'Orsay",mvt:"Symbolisme",emoji:"💐",rar:"commun",annee:"1912",note:"Redon vieillissant abandonne le charbon pour la couleur. Ses fleurs sont des explosions chromatiques — après des années de noirs absolus."},
+{id:"picasso_bleu",nom:"La Vie",artist:"Picasso",musee:"Cleveland Museum of Art",mvt:"Période bleue",emoji:"🔵",rar:"commun",annee:"1903",note:"La période bleue commence après le suicide de son ami Carlos Casagemas. Tout est froid, triste, monochrome. La vie comme distance."},
+{id:"modigliani_cariatide",nom:"Cariatide",artist:"Modigliani",musee:"Centre Pompidou",mvt:"École de Paris",emoji:"🗿",rar:"commun",annee:"1913",note:"Une figure sculptée peinte. Modigliani rêvait de sculpture, pas de peinture. Il a abandonné le marbre faute d'argent pour la poussière. Le reste est un mythe."},
+{id:"utrillo_rue",nom:"Rue à Montmartre",artist:"Utrillo",musee:"Musée d'Orsay",mvt:"École de Paris",emoji:"🏘️",rar:"commun",annee:"1910",note:"Des maisons blanches, un ciel gris, une rue vide. Utrillo peignait souvent de mémoire ou de cartes postales. L'absence de gens est son silence."},
+{id:"soutine_boeuf",nom:"Le Bœuf écorché",artist:"Soutine",musee:"Musée de l'Orangerie",mvt:"Expressionnisme",emoji:"🥩",rar:"commun",annee:"1925",note:"Soutine a accroché un vrai bœuf dans son atelier pendant des semaines. Il demandait à un assistant d'arroser la viande de sang frais pour la couleur."},
+{id:"leger_constructeurs",nom:"Les Constructeurs",artist:"Fernand Léger",musee:"Musée Fernand-Léger, Biot",mvt:"Tubisme",emoji:"🏗️",rar:"commun",annee:"1950",note:"Des ouvriers dans des poutrelles d'acier. Léger voulait que l'art appartienne aux travailleurs. Il a peint des dizaines de variantes de cette scène."},
+{id:"delaunay_disques",nom:"Disques simultanés",artist:"Robert Delaunay",musee:"Centre Pompidou",mvt:"Orphisme",emoji:"🌈",rar:"commun",annee:"1912",note:"De la couleur pure, en cercles. Delaunay a inventé l'orphisme — une abstraction musicale, sans sujet ni récit. Apollinaire lui a trouvé le nom."},
+{id:"sonia_marche",nom:"Le Marché au Minho",artist:"Sonia Delaunay",musee:"Centre Pompidou",mvt:"Orphisme",emoji:"🎪",rar:"commun",annee:"1915",note:"Un marché portugais explosant de couleurs complémentaires. Sonia Delaunay était aussi peintre que couturière — le tissu comme toile, la robe comme tableau."},
+{id:"duchamp_fontaine",nom:"Fontaine",artist:"Duchamp",musee:"Centre Pompidou (réplique)",mvt:"Dadaïsme",emoji:"🚽",rar:"commun",annee:"1917",note:"Un urinoir retourné, signé R. Mutt. Envoyé à une exposition «sans jury». Refusé. Photographié par Stieglitz. Devenu l'œuvre la plus influente du XXe siècle."},
+{id:"picabia_amoureux",nom:"Parade amoureuse",artist:"Picabia",musee:"Morton Neumann Collection",mvt:"Dadaïsme",emoji:"⚙️",rar:"commun",annee:"1917",note:"Deux machines qui se font la cour. Picabia transforme l'amour en mécanique absurde. Il avait dit: «Ma tête est ronde pour que mes pensées puissent changer de direction.»"},
+{id:"dix_journaliste",nom:"La Journaliste Sylvia von Harden",artist:"Otto Dix",musee:"Centre Pompidou",mvt:"Nouvelle Objectivité",emoji:"🚬",rar:"commun",annee:"1926",note:"Une femme aux cheveux courts, cigarette à la main, monocle à l'œil. Dix peint la République de Weimar avec une cruauté chirurgicale."},
+{id:"grosz_metropolis",nom:"Metropolis",artist:"George Grosz",musee:"Thyssen-Bornemisza",mvt:"Nouvelle Objectivité",emoji:"🌇",rar:"commun",annee:"1917",note:"La grande ville capitaliste, vue comme un égout de violence et de luxe. Grosz a été arrêté pour obscénité et offense à l'armée — trois fois."},
+{id:"kokoschka_epouse",nom:"La Fiancée du vent",artist:"Kokoschka",musee:"Kunstmuseum, Bâle",mvt:"Expressionnisme",emoji:"🌪️",rar:"commun",annee:"1914",note:"Kokoschka et Alma Mahler enlacés dans un tourbillon. Une déclaration d'amour peinte avec la violence d'un cauchemar. Elle a mis fin à la relation. Il a fait fabriquer une poupée à son image."},
+{id:"nolde_danse",nom:"Danse autour du veau d'or",artist:"Nolde",musee:"Neue Pinakothek, Munich",mvt:"Expressionnisme",emoji:"🐂",rar:"commun",annee:"1910",note:"Des corps en transe, couleurs criardes. Nolde peint la religion comme un chamanisme primitif. Les nazis l'ont mis sur la liste «dégénérée» — malgré ses propres sympathies."},
+{id:"maillol_mediterranee",nom:"La Méditerranée",artist:"Maillol",musee:"Musée d'Orsay",mvt:"Symbolisme",emoji:"⛱️",rar:"commun",annee:"1905",note:"Une femme assise, pesante et sereine. Maillol revenait à la sculpture après avoir fait de la tapisserie. Ce bloc de marbre est son premier grand succès."},
+{id:"giacometti_homme",nom:"L'Homme qui marche",artist:"Giacometti",musee:"Fondation Maeght",mvt:"Existentialisme",emoji:"🚶",rar:"commun",annee:"1960",note:"Un fil d'homme en bronze qui avance. Giacometti disait ne jamais réussir à capturer ce qu'il voyait. Ces silhouettes effacées sont la conscience de l'échec."},
+{id:"brancusi_oiseau",nom:"L'Oiseau dans l'espace",artist:"Brancusi",musee:"Centre Pompidou",mvt:"Modernisme",emoji:"✨",rar:"commun",annee:"1928",note:"Un élan poli en bronze. Un douanier américain a refusé de le laisser entrer comme œuvre d'art — trop abstrait pour être une sculpture, donc taxé comme métal industriel."},
+{id:"cesar_pouce",nom:"Le Pouce",artist:"César",musee:"Centre Pompidou",mvt:"Nouveau Réalisme",emoji:"👍",rar:"commun",annee:"1965",note:"Son propre pouce, agrandi. César moulait des objets réels, les comprimait, les envoyait au fondeur. Le corps de l'artiste comme matière première."},
+];
+
+const TOTAL = DATA.length;
+const R = {
+  commun:{label:"Commun",w:55,c:"var(--r-commun)"},
+  rare:{label:"Rare",w:30,c:"var(--r-rare)"},
+  epique:{label:"Épique",w:12,c:"var(--r-epique)"},
+  legendaire:{label:"Légendaire",w:3,c:"var(--r-legendaire)"}
+};
+const RORDER=["commun","rare","epique","legendaire"];
+const RC_HEX={commun:"#9e9e8a",rare:"#7ab8d4",epique:"#c97cdb",legendaire:"#e8c47a"};
+const byRar=r=>DATA.filter(d=>d.rar===r);
+const ECLAT={commun:1,rare:5,epique:15,legendaire:50};
+const SHOP_MULT=30;
+const shopPrice=rar=>ECLAT[rar]*SHOP_MULT;
+const packEclat=pk=>pk.reduce((s,d)=>s+ECLAT[d.rar],0);
+const fmtN=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,"\u202f");
+
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let x=Math.imul(seed^seed>>>15,1|seed);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296;};}
+function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function computeStock(dateStr){const r=rng(hashStr("art_shop"+dateStr));const idx=new Set();while(idx.size<6){idx.add(Math.floor(r()*DATA.length));}return[...idx].map(i=>DATA[i]);}
+
+// Storage: window.storage (Claude artifacts) -> localStorage -> mémoire
+const mem={};
+async function sGet(k){try{if(window.storage){const r=await window.storage.get(k);return r?r.value:null;}}catch(e){}
+  try{const v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}return(k in mem)?mem[k]:null;}
+async function sSet(k,v){mem[k]=v;try{if(window.storage)await window.storage.set(k,v);}catch(e){}try{localStorage.setItem(k,v);}catch(e){}}
+
+let state={collection:{},last:null,streak:0,demo:false,eclats:0,shopDate:null,shopBought:[],account:{username:"",email:"",password:""},friends:[]};
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const yest=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+
+async function load(){
+  try{state.collection=JSON.parse(await sGet("art:col")||"{}");}catch(e){state.collection={};}
+  state.last=await sGet("art:last");state.streak=parseInt(await sGet("art:streak")||"0",10)||0;
+  state.demo=(await sGet("art:demo"))==="1";state.eclats=parseInt(await sGet("art:eclats")||"0",10)||0;
+  state.shopDate=await sGet("art:shopDate");
+  try{state.shopBought=JSON.parse(await sGet("art:shopBought")||"[]");}catch(e){state.shopBought=[];}
+  try{state.account=JSON.parse(await sGet("art:account")||"null")||state.account;}catch(e){}
+  try{state.friends=JSON.parse(await sGet("art:friends")||"[]");}catch(e){state.friends=[];}
+  if(state.shopDate!==today()){state.shopDate=today();state.shopBought=[];await save();}}
+async function save(){
+  await sSet("art:col",JSON.stringify(state.collection));await sSet("art:last",state.last||"");
+  await sSet("art:streak",String(state.streak));await sSet("art:demo",state.demo?"1":"0");
+  await sSet("art:eclats",String(state.eclats));await sSet("art:shopDate",state.shopDate||"");
+  await sSet("art:shopBought",JSON.stringify(state.shopBought));
+  await sSet("art:account",JSON.stringify(state.account));await sSet("art:friends",JSON.stringify(state.friends));}
+
+// Tirage
+function rollRarity(){const t=RORDER.reduce((s,r)=>s+R[r].w,0);let x=Math.random()*t;for(const r of RORDER){if(x<R[r].w)return r;x-=R[r].w;}return"commun";}
+function pickPack(){let pulls=[],used=new Set();
+  for(let i=0;i<5;i++){let r=rollRarity();let pool=byRar(r).filter(d=>!used.has(d.id));if(!pool.length)pool=byRar(r);const c=pool[Math.floor(Math.random()*pool.length)];used.add(c.id);pulls.push(c);}
+  if(!pulls.some(p=>p.rar!=="commun")){const i=Math.floor(Math.random()*5);const up=byRar("rare").filter(d=>!pulls.find(p=>p.id===d.id));pulls[i]=up[Math.floor(Math.random()*up.length)];}
+  pulls.sort((a,b)=>RORDER.indexOf(a.rar)-RORDER.indexOf(b.rar));return pulls;}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// HTML d'une carte
+function cardHTML(d,foil){
+  return `<div class="card" data-foil="${foil?1:0}" style="--rc:${R[d.rar].c}">
+    <div class="art"><span class="emoji">${d.emoji}</span></div><div class="holo"></div>
+    <div class="corner">
+      <span class="rar"><span class="gem"></span>${R[d.rar].label}</span>
+      <span class="rate">${d.annee}<small>${d.musee}</small></span></div>
+    <div class="body">
+      <div class="nom">${d.nom}</div>
+      <div class="meta">${d.artist} · ${d.mvt}</div>
+      <div class="note">${d.note.substring(0,90)}${d.note.length>90?"…":""}</div>
+    </div></div>`;}
+
+// Flash
+function flash(){const fl=document.getElementById("flash");fl.classList.remove("go");void fl.offsetWidth;fl.classList.add("go");}
+
+// Sparks
+function sparkAt(el,color,n){const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,host=document.body;
+  for(let i=0;i<n;i++){const s=document.createElement("div");s.className="spark";s.style.background=color;s.style.left=cx+"px";s.style.top=cy+"px";s.style.boxShadow=`0 0 9px ${color}`;host.appendChild(s);
+    const a=Math.random()*6.28,dist=80+Math.random()*140;
+    s.animate([{transform:"translate(0,0) scale(1)",opacity:1},{transform:`translate(${Math.cos(a)*dist}px,${Math.sin(a)*dist}px) scale(0)`,opacity:0}],{duration:600+Math.random()*380,easing:"cubic-bezier(.2,.7,.2,1)"}).onfinish=()=>s.remove();}}
+
+// PACK - ouverture
+const canOpen=()=>state.demo||state.last!==today();
+let current=null,revealing=false,busy=false,placed=0;
+
+function startOpen(){
+  if(!canOpen()||revealing)return;
+  revealing=true;busy=false;placed=0;current=shuffle(pickPack());
+  document.getElementById("stage").classList.add("on");
+  buildReveal();flash();}
+
+function buildReveal(){const deck=document.getElementById("deck");
+  deck.innerHTML=current.map((d,i)=>{const foil=d.rar==="epique"||d.rar==="legendaire";
+    return `<div class="flip" data-i="${i}" data-rar="${d.rar}" style="--rc:${R[d.rar].c}">
+      <div class="face front"><div class="back-card"><div class="bmark">✦</div><div class="brar">${R[d.rar].label}</div></div></div>
+      <div class="face rear">${cardHTML(d,foil)}</div></div>`;}).join("");
+  deck.querySelectorAll(".flip").forEach(f=>f.onclick=()=>flipCard(f));
+  document.getElementById("eclatWon").innerHTML=`<span>✨</span> +${packEclat(current)} éclats à la clé`;
+  document.getElementById("revealAll").style.display="";document.getElementById("doneBtn").style.display="none";}
+
+function flipCard(f){if(busy||f.classList.contains("shown"))return;busy=true;
+  const d=current[+f.dataset.i],rar=d.rar;
+  document.querySelectorAll("#deck .flip").forEach(x=>{if(x!==f&&!x.classList.contains("shown"))x.classList.add("vanish");});
+  f.classList.add("shown");if(rar==="legendaire")flash();
+  if(rar==="legendaire"||rar==="epique")sparkAt(f,RC_HEX[rar],rar==="legendaire"?20:8);
+  setTimeout(()=>{placed++;busy=false;
+    document.querySelectorAll("#deck .flip.vanish").forEach(x=>{if(!x.classList.contains("shown"))x.classList.remove("vanish");});
+    if(placed>=current.length){document.getElementById("doneBtn").style.display="";document.getElementById("revealAll").style.display="none";}
+  },600);}
+
+function revealAll(){const iv=setInterval(()=>{if(busy)return;const n=document.querySelector("#deck .flip:not(.shown)");if(!n){clearInterval(iv);return;}flipCard(n);},220);}
+
+async function keepLoot(){
+  current.forEach(d=>state.collection[d.id]=(state.collection[d.id]||0)+1);
+  state.eclats+=packEclat(current);
+  if(!state.demo){state.streak=(state.last===yest())?state.streak+1:1;state.last=today();}
+  await save();revealing=false;
+  document.getElementById("stage").classList.remove("on");
+  renderHome();renderEclats();renderDex();renderShop();renderGalerie();}
+
+// Render HOME (pack tab)
+function renderHome(){
+  const s=Math.max(state.streak,0);document.getElementById("streakN").textContent=s;document.getElementById("streakU").textContent=s>1?"jours":"jour";
+  const btn=document.getElementById("openBtn"),wait=document.getElementById("pack-wait");
+  if(canOpen()){btn.style.display="";wait.style.display="none";}else{btn.style.display="none";wait.style.display="";}}
+
+function renderEclats(){const v=fmtN(state.eclats);document.getElementById("eclatN").textContent=v;const b=document.getElementById("eclatN2");if(b)b.textContent=v;}
+
+function renderOdds(){document.getElementById("odds").innerHTML=RORDER.slice().reverse().map(r=>`<span class="pill"><span class="dot" style="background:${R[r].c}"></span>${R[r].label} ${R[r].w}%</span>`).join("");}
+
+// SHOP
+function renderShop(){const el=document.getElementById("shop");if(!el)return;const stock=computeStock(today());
+  el.innerHTML=stock.map(d=>{const price=shopPrice(d.rar),bought=state.shopBought.includes(d.id),owned=(state.collection[d.id]||0)>0,afford=state.eclats>=price,dis=bought||!afford;
+    const label=bought?"Acquis ✓":`<span>✨</span> ${fmtN(price)}`;
+    return `<div class="shop-card" style="--rc:${R[d.rar].c}">${owned?'<span class="owned">En collection</span>':''}<div class="topl"></div><div class="sart">${d.emoji}</div><div class="sn">${d.nom}</div><div class="sm"><span class="rb">${R[d.rar].label}</span><span>${d.artist}</span></div><button class="buy ${dis?'no':''}" ${dis?'disabled':''} data-id="${d.id}">${label}</button></div>`;}).join("");
+  el.querySelectorAll(".buy:not(.no)").forEach(b=>b.onclick=()=>buy(b.dataset.id));}
+
+function buy(id){const d=DATA.find(x=>x.id===id);if(!d)return;const price=shopPrice(d.rar);if(state.shopBought.includes(id)||state.eclats<price)return;
+  state.eclats-=price;state.collection[id]=(state.collection[id]||0)+1;state.shopBought.push(id);save();renderEclats();renderShop();renderDex();renderGalerie();}
+
+// COLLECTION (dex)
+let filter="all",query="",own="all";
+function renderFilters(){const f=document.getElementById("filters");const items=[["all","Tout"]].concat(RORDER.slice().reverse().map(r=>[r,R[r].label]));
+  f.innerHTML=items.map(([k,l])=>`<button class="chip ${k===filter?'on':''}" data-f="${k}">${l}</button>`).join("");
+  f.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{filter=c.dataset.f;renderFilters();renderDex();});}
+function renderOwnFilters(){const f=document.getElementById("ownfilters");const items=[["all","Tous"],["owned","Possédés"],["missing","Manquants"]];
+  f.innerHTML=items.map(([k,l])=>`<button class="chip ${k===own?'on':''}" data-o="${k}">${l}</button>`).join("");
+  f.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{own=c.dataset.o;renderOwnFilters();renderDex();});}
+
+function renderDex(){const owned=Object.keys(state.collection).filter(id=>state.collection[id]>0).length;const pct=Math.round(owned/TOTAL*100);
+  document.getElementById("pctN").textContent=pct;document.getElementById("ownedN").textContent=owned;document.getElementById("totalN").textContent=TOTAL;document.getElementById("bar").style.width=pct+"%";
+  const list=DATA.filter(d=>{const have=(state.collection[d.id]||0)>0;
+      if(filter!=="all"&&d.rar!==filter)return false;
+      if(own==="owned"&&!have)return false;
+      if(own==="missing"&&have)return false;
+      if(query&&!(d.nom.toLowerCase().includes(query)||d.artist.toLowerCase().includes(query)||d.mvt.toLowerCase().includes(query)||d.musee.toLowerCase().includes(query)))return false;
+      return true;})
+    .sort((a,b)=>RORDER.indexOf(b.rar)-RORDER.indexOf(a.rar)||a.nom.localeCompare(b.nom));
+  document.getElementById("dex").innerHTML=list.map(d=>{const cnt=state.collection[d.id]||0,have=cnt>0;
+    return `<div class="cell ${have?'have':'locked-c'}" style="--rc:${R[d.rar].c}" data-id="${d.id}"><div class="topline"></div>
+      <div class="ce">${have?d.emoji:'🔒'}</div>
+      <div><div class="cn">${have?d.nom:'???'}</div>
+      <div class="cmeta">${have?`<span class="rb">${R[d.rar].label}</span><span>${d.artist}</span>`:`<span class="rb">${R[d.rar].label}</span>`}</div></div>
+      ${cnt>1?`<div class="dupe">×${cnt}</div>`:''}</div>`;}).join("");
+  document.querySelectorAll(".cell.have").forEach(c=>c.onclick=()=>openOmodal(c.dataset.id));}
+
+// GALERIE
+let gfilter="all";
+function renderGalerie(){
+  const owned=Object.keys(state.collection).filter(id=>state.collection[id]>0).length;
+  document.getElementById("gownedN").textContent=owned;document.getElementById("gtotalN").textContent=TOTAL;
+  // filters
+  const gf=document.getElementById("gfilters");
+  const items=[["all","Tout"]].concat(RORDER.slice().reverse().map(r=>[r,R[r].label]));
+  gf.innerHTML=items.map(([k,l])=>`<button class="chip ${k===gfilter?'on':''}" data-gf="${k}">${l}</button>`).join("");
+  gf.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{gfilter=c.dataset.gf;renderGalerie();});
+  // grid
+  const ownedList=DATA.filter(d=>(state.collection[d.id]||0)>0&&(gfilter==="all"||d.rar===gfilter))
+    .sort((a,b)=>RORDER.indexOf(b.rar)-RORDER.indexOf(a.rar)||a.nom.localeCompare(b.nom));
+  const grid=document.getElementById("galerieGrid");
+  if(ownedList.length===0){
+    grid.innerHTML=`<div class="empty-galerie"><div class="em">🎴</div><p>Ouvre ton premier pack du jour<br>pour commencer ta galerie.</p></div>`;return;}
+  grid.innerHTML=ownedList.map(d=>`<div class="gitem owned" style="--rc:${R[d.rar].c}" data-id="${d.id}">
+    <div class="gart">${d.emoji}</div>
+    <div class="ginfo">
+      <div class="gtitle">${d.nom}</div>
+      <div class="gmeta"><span class="grar">${R[d.rar].label}</span><span>${d.artist}</span></div>
+    </div>
+    ${(state.collection[d.id]||0)>1?`<div class="gdupe">×${state.collection[d.id]}</div>`:''}
+    </div>`).join("");
+  grid.querySelectorAll(".gitem").forEach(c=>c.onclick=()=>openOmodal(c.dataset.id));}
+
+// Modal détail œuvre
+function openOmodal(id){const d=DATA.find(x=>x.id===id);if(!d)return;
+  document.getElementById("opanel").innerHTML=`
+    <div class="oart" style="--rc:${R[d.rar].c}">${d.emoji}</div>
+    <div class="obody">
+      <div class="otop">
+        <span class="orar" style="--rc:${R[d.rar].c}"><span style="display:inline-block;width:6px;height:6px;background:${R[d.rar].c};border-radius:1px;transform:rotate(45deg);margin-right:4px;box-shadow:0 0 6px ${R[d.rar].c}"></span>${R[d.rar].label}</span>
+      </div>
+      <div class="onom">${d.nom}</div>
+      <div class="oartiste">${d.artist}, <em>${d.annee}</em></div>
+      <div class="ometa"><span>${d.mvt}</span><span>·</span><span>${d.musee}</span></div>
+      <div class="onote">${d.note}</div>
+      <button class="oclose" id="oclose">Fermer</button>
+    </div>`;
+  document.getElementById("omodal").classList.add("on");
+  document.getElementById("oclose").onclick=closeOmodal;
+  document.getElementById("omodalBg").onclick=closeOmodal;}
+function closeOmodal(){document.getElementById("omodal").classList.remove("on");}
+
+// Countdown
+function tickCountdowns(){const now=new Date(),mid=new Date();mid.setHours(24,0,0,0);let ms=mid-now;
+  const str=`${String(Math.floor(ms/3.6e6)).padStart(2,"0")}:${String(Math.floor(ms%3.6e6/6e4)).padStart(2,"0")}:${String(Math.floor(ms%6e4/1e3)).padStart(2,"0")}`;
+  const a=document.getElementById("packCountdown");if(a)a.textContent=str;const b=document.getElementById("shopCountdown");if(b)b.textContent=str;
+  if(state.shopDate!==today()){state.shopDate=today();state.shopBought=[];save();renderShop();renderHome();}}
+setInterval(tickCountdowns,1000);
+
+// Navigation
+function go(tab){
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===tab));
+  document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  if(tab==="collection-view")renderDex();
+  if(tab==="shop-view")renderShop();
+  if(tab==="galerie-view")renderGalerie();}
+document.querySelectorAll(".navbtn").forEach(t=>t.onclick=()=>go(t.dataset.tab));
+
+// Boutons
+document.getElementById("openBtn").onclick=startOpen;
+document.getElementById("revealAll").onclick=revealAll;
+document.getElementById("doneBtn").onclick=keepLoot;
+document.getElementById("search").oninput=e=>{query=e.target.value.toLowerCase().trim();renderDex();};
+
+// Settings
+const sheet=document.getElementById("sheet");
+document.getElementById("settingsBtn").onclick=()=>{document.getElementById("demoToggle").classList.toggle("on",state.demo);renderAccount();sheet.classList.add("on");};
+document.getElementById("sheetBg").onclick=()=>sheet.classList.remove("on");
+document.getElementById("demoToggle").onclick=async()=>{state.demo=!state.demo;document.getElementById("demoToggle").classList.toggle("on",state.demo);await save();renderHome();};
+document.getElementById("resetBtn").onclick=async()=>{if(!confirm("Réinitialiser toute la collection ?"))return;state.collection={};state.last=null;state.streak=0;state.eclats=0;state.shopBought=[];state.shopDate=today();await save();sheet.classList.remove("on");renderHome();renderDex();renderEclats();renderShop();renderGalerie();};
+function renderAccount(){const a=state.account||{};const u=document.getElementById("accUser"),m=document.getElementById("accMail"),p=document.getElementById("accPass");if(u)u.value=a.username||"";if(m)m.value=a.email||"";if(p)p.value=a.password||"";}
+async function saveAccount(){state.account={username:document.getElementById("accUser").value.trim(),email:document.getElementById("accMail").value.trim(),password:document.getElementById("accPass").value};await save();const b=document.getElementById("accSave"),tx=b.textContent;b.textContent="Enregistré ✓";setTimeout(()=>b.textContent=tx,1400);}
+document.getElementById("accSave").onclick=saveAccount;
+
+// Amis
+function inviteUrl(){const u=(state.account&&state.account.username)?state.account.username:"";return location.origin+location.pathname+(u?("?invite="+encodeURIComponent(u)):"");}
+function renderFriends(){const el=document.getElementById("friendList");const fr=state.friends||[];
+  el.innerHTML=fr.length?fr.map((f,i)=>`<div class="friend-item"><span>👤 ${f}</span><span class="rm" data-i="${i}">×</span></div>`).join(""):'<div class="friend-empty">Aucun ami pour l\'instant</div>';
+  el.querySelectorAll(".rm").forEach(b=>b.onclick=()=>{state.friends.splice(+b.dataset.i,1);save();renderFriends();});}
+function openFriends(){document.getElementById("inviteLink").value=inviteUrl();renderFriends();document.getElementById("friendModal").classList.add("on");}
+async function addFriend(){const inp=document.getElementById("friendInput"),v=inp.value.trim();if(!v)return;if(!state.friends)state.friends=[];if(!state.friends.includes(v))state.friends.push(v);inp.value="";await save();renderFriends();}
+document.getElementById("inviteBtn").onclick=openFriends;
+document.getElementById("friendBg").onclick=()=>document.getElementById("friendModal").classList.remove("on");
+document.getElementById("friendClose").onclick=()=>document.getElementById("friendModal").classList.remove("on");
+document.getElementById("addFriend").onclick=addFriend;
+document.getElementById("friendInput").addEventListener("keydown",e=>{if(e.key==="Enter")addFriend();});
+document.getElementById("copyLink").onclick=()=>{const i=document.getElementById("inviteLink");i.select();try{navigator.clipboard.writeText(i.value);}catch(e){}const b=document.getElementById("copyLink"),tx=b.textContent;b.textContent="Copié ✓";setTimeout(()=>b.textContent=tx,1200);};
+
+// Init
+(async function init(){await load();renderOdds();renderFilters();renderOwnFilters();renderHome();renderEclats();renderDex();renderShop();renderGalerie();tickCountdowns();})();
+</script>
