@@ -7,16 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --encre:#08070d; --encre2:#0f0e18; --ardoise:#16141f; --ardoise2:#1e1b2d;
-  --parchemin:#f0e8d8; --parchemin-dim:#9a8f7e; --ligne:rgba(240,232,216,.09);
-  --or:#e8c47a; --or-bright:#f5dfa0;
-  --r-commun:#9e9e8a; --r-rare:#7ab8d4; --r-epique:#c97cdb; --r-legendaire:#e8c47a;
-  --accent:#c97cdb;
+  --encre:#0c0405; --encre2:#140709; --ardoise:#1c0a0a; --ardoise2:#24100f;
+  --parchemin:#ecdcce; --parchemin-dim:#9a7468; --ligne:rgba(190,150,86,.10);
+  --or:#be9656; --or-bright:#d8b478;
+  --r-commun:#9a8472; --r-rare:#7a98a8; --r-epique:#b97cae; --r-legendaire:#be9656;
+  --accent:#781e1c;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
 body{
-  background:radial-gradient(ellipse 160% 80% at 50% -10%, #1a1230 0%, var(--encre) 60%) fixed, var(--encre);
+  background:radial-gradient(ellipse 160% 80% at 50% -10%, #1c0a0a 0%, #0c0405 60%) fixed, var(--encre);
   color:var(--parchemin); font-family:"DM Sans",system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;
 }
 button{font-family:inherit;color:inherit;border:none;background:none;cursor:pointer}
@@ -27,7 +27,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .sidebar{
   border-right:1px solid var(--ligne); padding:28px 20px; display:flex;flex-direction:column;gap:20px;
   position:sticky;top:0;height:100vh;overflow-y:auto;
-  background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 40%);
+  background:linear-gradient(180deg,rgba(120,30,28,.10),transparent 40%);
 }
 .brand .kick{font:500 10px/1 "DM Mono";letter-spacing:.32em;text-transform:uppercase;color:var(--or);opacity:.85}
 .brand .name{font:700 28px/1 "Cormorant Garamond";letter-spacing:-.01em;margin-top:8px;font-style:italic}
@@ -56,9 +56,9 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .pack-eyebrow{font:500 10px "DM Mono";letter-spacing:.32em;text-transform:uppercase;color:var(--or);opacity:.8}
 .pack-wrap{position:relative;width:248px;height:370px;perspective:1400px}
 .pack{position:absolute;inset:0;border-radius:20px;cursor:pointer;
-  background:linear-gradient(145deg,#1e1630,#110d1e 65%);
+  background:linear-gradient(145deg,#281010,#150606 65%);
   border:1px solid rgba(232,196,122,.3);
-  box-shadow:0 36px 70px -28px rgba(0,0,0,.95), inset 0 1px 0 rgba(255,255,255,.05), 0 0 60px -20px rgba(201,124,219,.15);
+  box-shadow:0 36px 70px -28px rgba(0,0,0,.95), inset 0 1px 0 rgba(255,255,255,.05), 0 0 60px -20px rgba(120,30,28,.15);
   display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:28px 20px;overflow:hidden;
   animation:float 5.5s ease-in-out infinite;transition:transform .3s}
 .pack:hover{transform:translateY(-6px) scale(1.015)}
@@ -72,7 +72,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .pack .ptitle{font:700 28px/1 "Cormorant Garamond";font-style:italic}
 .pack .psub{font:400 12.5px "DM Sans";color:var(--parchemin-dim);margin-top:-2px}
 .pack .ribbon{position:absolute;bottom:0;left:0;right:0;height:48px;background:linear-gradient(180deg,transparent,rgba(232,196,122,.1));border-top:1px solid rgba(232,196,122,.2);display:grid;place-items:center;font:500 9px "DM Mono";letter-spacing:.22em;text-transform:uppercase;color:var(--or)}
-.pack-glow{position:absolute;inset:-30px;border-radius:40px;background:radial-gradient(circle,rgba(201,124,219,.18),transparent 65%);filter:blur(12px);z-index:-1}
+.pack-glow{position:absolute;inset:-30px;border-radius:40px;background:radial-gradient(circle,rgba(120,30,28,.18),transparent 65%);filter:blur(12px);z-index:-1}
 .odds{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
 .pill{display:inline-flex;align-items:center;gap:6px;font:500 11px "DM Sans";color:var(--parchemin-dim);padding:5px 11px;border-radius:100px;border:1px solid var(--ligne);background:var(--ardoise)}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -171,7 +171,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .card .meta{font:500 9.5px "DM Mono";letter-spacing:.06em;text-transform:uppercase;color:var(--parchemin-dim)}
 .card .note{font:400 clamp(10px,1.4vw,12px)/1.35 "Cormorant Garamond";font-style:italic;color:var(--parchemin);opacity:.8}
 .card.back .art,.card.back .body,.card.back .corner{opacity:0}
-.card.back{background:linear-gradient(150deg,#1e1630,#110d1e);display:grid;place-items:center}
+.card.back{background:linear-gradient(150deg,#281010,#150606);display:grid;place-items:center}
 .card.back::after{content:"";position:absolute;inset:14px;border:1px solid rgba(232,196,122,.15);border-radius:12px}
 .cardback-mark{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
 .cardback-mark span{font:700 46px "Cormorant Garamond";font-style:italic;color:rgba(232,196,122,.2)}
@@ -199,7 +199,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .flip.shown:hover{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .face.rear{transform:rotateY(180deg)}
-.back-card{position:absolute;inset:0;border-radius:16px;background:linear-gradient(150deg,#1e1630,#110d1e);display:grid;place-items:center;border:1px solid var(--ligne);transition:box-shadow .25s,border-color .25s}
+.back-card{position:absolute;inset:0;border-radius:16px;background:linear-gradient(150deg,#281010,#150606);display:grid;place-items:center;border:1px solid var(--ligne);transition:box-shadow .25s,border-color .25s}
 .back-card::after{content:"";position:absolute;inset:11px;border:1px solid rgba(232,196,122,.13);border-radius:10px}
 .flip:not(.shown):hover .back-card{border-color:color-mix(in srgb,var(--rc) 65%,transparent);box-shadow:0 0 44px -6px var(--rc),0 18px 32px -16px #000}
 .back-card .bmark{font:700 36px "Cormorant Garamond";font-style:italic;color:rgba(232,196,122,.2)}
@@ -546,7 +546,7 @@ const R = {
   legendaire:{label:"Légendaire",w:3,c:"var(--r-legendaire)"}
 };
 const RORDER=["commun","rare","epique","legendaire"];
-const RC_HEX={commun:"#9e9e8a",rare:"#7ab8d4",epique:"#c97cdb",legendaire:"#e8c47a"};
+const RC_HEX={commun:"#9a8472",rare:"#7a98a8",epique:"#b97cae",legendaire:"#be9656"};
 const byRar=r=>DATA.filter(d=>d.rar===r);
 const ECLAT={commun:1,rare:5,epique:15,legendaire:50};
 const SHOP_MULT=30;
