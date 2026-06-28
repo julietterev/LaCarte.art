@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Le Musée — Œuvres au Quotidien</title>
+<title>La Carte — Œuvres au Quotidien</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600;1,9..144,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
   background:linear-gradient(180deg,rgba(120,30,28,.10),transparent 40%);
 }
 .brand .kick{font:500 10px/1 "DM Mono";letter-spacing:.32em;text-transform:uppercase;color:var(--or);opacity:.85}
-.brand .name{font:700 28px/1 "Fraunces","Cormorant Garamond";letter-spacing:-.01em;margin-top:8px;font-style:italic}
+.brand .name{font:700 28px/1 "Fraunces","Cormorant Garamond";letter-spacing:-.01em;margin-top:8px}
 .nav{display:flex;flex-direction:column;gap:4px}
 .navbtn{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:10px;color:var(--parchemin-dim);font:500 13.5px "DM Sans";transition:.18s}
 .navbtn .ic{font-size:16px;width:20px;text-align:center}
@@ -70,7 +70,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .pack .seal{font:500 9px/1.4 "DM Mono";letter-spacing:.3em;text-transform:uppercase;color:var(--or);opacity:.7}
 .pack .crest{font-size:80px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));animation:bob 3s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.pack .ptitle{font:700 28px/1 "Fraunces","Cormorant Garamond";font-style:italic}
+.pack .ptitle{font:700 28px/1 "Fraunces","Cormorant Garamond"}
 .pack .psub{font:400 12.5px "DM Sans";color:var(--parchemin-dim);margin-top:-2px}
 .pack .ribbon{position:absolute;bottom:0;left:0;right:0;height:48px;background:linear-gradient(180deg,transparent,rgba(232,196,122,.1));border-top:1px solid rgba(232,196,122,.2);display:grid;place-items:center;font:500 9px "DM Mono";letter-spacing:.22em;text-transform:uppercase;color:var(--or)}
 .pack-glow{position:absolute;inset:-30px;border-radius:40px;background:radial-gradient(circle,rgba(120,30,28,.18),transparent 65%);filter:blur(12px);z-index:-1}
@@ -86,7 +86,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 /* ---- CARTE DU MONDE (map) ---- */
 #carte-view.active{display:flex;flex-direction:column;gap:14px;min-height:calc(100vh - 72px)}
 .carte-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.carte-head h1{font:700 28px "Fraunces","Cormorant Garamond";font-style:italic;margin:0}
+.carte-head h1{font:700 28px "Fraunces","Cormorant Garamond";margin:0}
 .carte-count{font:500 12px "DM Mono";letter-spacing:.08em;color:var(--parchemin-dim)}
 .carte-count b{color:var(--or)}
 #mapEl{flex:1;min-height:460px;border-radius:16px;overflow:hidden;border:1px solid var(--ligne);background:#0c0405}
@@ -95,14 +95,11 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .leaflet-control-zoom a:hover{background:var(--ardoise);color:var(--or)}
 .leaflet-control-attribution{background:rgba(12,4,5,.7)!important;color:var(--parchemin-dim)!important}
 .leaflet-control-attribution a{color:var(--parchemin-dim)!important}
-/* marqueur musée */
-.mk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
-  font:700 11px "DM Mono";color:var(--parchemin-dim);
-  background:var(--ardoise2);border:1px solid var(--ligne);box-shadow:0 4px 12px -4px #000;transition:.15s}
-.mk.lit{color:#2a1d04;background:radial-gradient(circle at 35% 30%,var(--or-bright),var(--or));
-  border-color:color-mix(in srgb,var(--rc,#be9656) 60%,var(--or));
-  box-shadow:0 0 14px -2px color-mix(in srgb,var(--rc,#be9656) 80%,transparent),0 4px 12px -4px #000}
-.mk:hover{transform:scale(1.18)}
+/* marqueur musée (un point doré par musée découvert) */
+.mk{width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,var(--or-bright),var(--or));
+  border:1px solid #0c0405;box-shadow:0 0 10px -1px rgba(216,180,122,.7),0 3px 8px -3px #000;transition:.15s}
+.mk:hover{transform:scale(1.28)}
 /* popup musée */
 .leaflet-popup-content-wrapper{background:var(--ardoise);color:var(--parchemin);border:1px solid var(--ligne);border-radius:14px;box-shadow:0 30px 70px -30px #000}
 .leaflet-popup-tip{background:var(--ardoise);border:1px solid var(--ligne)}
@@ -124,7 +121,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 /* ---- GALERIE ---- */
 #galerie-view.active{display:flex;flex-direction:column;gap:14px;min-height:calc(100vh - 72px)}
 .galerie-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.galerie-head h1{font:700 28px "Fraunces","Cormorant Garamond";font-style:italic;margin:0}
+.galerie-head h1{font:700 28px "Fraunces","Cormorant Garamond";margin:0}
 .galerie-count{font:500 12px "DM Mono";letter-spacing:.08em;color:var(--parchemin-dim)}
 .galerie-count b{color:var(--or)}
 .galerie-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
@@ -163,7 +160,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 
 /* ---- COLLECTION ---- */
 .col-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:18px;flex-wrap:wrap}
-.col-head h1{font:700 32px "Fraunces","Cormorant Garamond";font-style:italic;margin:0}
+.col-head h1{font:700 32px "Fraunces","Cormorant Garamond";margin:0}
 .col-head .pct{font:700 36px "Cormorant Garamond";color:var(--or);line-height:1}
 .col-head .pct small{font:500 11px "DM Sans";color:var(--parchemin-dim)}
 .progress{height:5px;border-radius:5px;background:var(--ardoise2);overflow:hidden;margin-bottom:20px}
@@ -223,7 +220,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 .flash.go{animation:flash .5s ease-out}
 @keyframes flash{0%{opacity:0}12%{opacity:.75}100%{opacity:0}}
 .reveal{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 22px 38px;width:100%}
-.r-title{font:700 28px "Fraunces","Cormorant Garamond";font-style:italic}
+.r-title{font:700 28px "Fraunces","Cormorant Garamond"}
 .r-hint{font:400 12.5px "DM Sans";color:var(--parchemin-dim);margin-top:-7px}
 .deck-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;width:min(1040px,95vw)}
 .r-foot{display:flex;flex-direction:column;align-items:center;gap:13px;margin-top:8px}
@@ -263,7 +260,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 
 /* ---- BOUTIQUE ---- */
 .shop-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
-.shop-head h1{font:700 32px "Fraunces","Cormorant Garamond";font-style:italic;margin:0}
+.shop-head h1{font:700 32px "Fraunces","Cormorant Garamond";margin:0}
 .shop-head .sub{font:400 13px "DM Sans";color:var(--parchemin-dim);margin-top:3px}
 .shop-head .bal{display:flex;align-items:center;gap:6px;font:600 18px "Cormorant Garamond"}
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:14px;padding-bottom:40px}
@@ -322,7 +319,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
 
 <div id="app">
   <aside class="sidebar">
-    <div class="brand"><div class="kick">Œuvres au Quotidien</div><div class="name">Le Musée</div></div>
+    <div class="brand"><div class="kick">Œuvres au Quotidien</div><div class="name">La Carte</div></div>
     <nav class="nav">
       <button class="navbtn on" data-tab="carte-view"><span class="ic">🗺️</span> Carte</button>
       <button class="navbtn" data-tab="galerie-view"><span class="ic">🖼️</span> Galerie</button>
@@ -341,7 +338,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
     <section class="view active" id="carte-view">
       <div class="carte-head">
         <h1>La carte du monde</h1>
-        <div class="carte-count"><b id="cvisitedN">0</b> / <span id="cmuseesN">0</span> musées visités</div>
+        <div class="carte-count"><b id="cvisitedN">0</b> musées découverts</div>
       </div>
       <div id="mapEl"></div>
       <div class="carte-foot" id="carteFoot"></div>
@@ -866,7 +863,7 @@ function ensureMap(){
   const el=document.getElementById("mapEl");
   if(typeof L==="undefined"){el.innerHTML='<div style="display:grid;place-items:center;height:100%;color:var(--parchemin-dim);font:400 14px \'DM Sans\';text-align:center;padding:20px">La carte n\'a pas pu se charger.<br>Vérifie ta connexion.</div>';return;}
   map=L.map(el,{worldCopyJump:true,minZoom:2,maxZoom:7,zoomControl:true,attributionControl:true}).setView([34,6],2);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",{
     subdomains:"abcd",maxZoom:19,
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
   markerLayer=L.layerGroup().addTo(map);
@@ -874,34 +871,31 @@ function ensureMap(){
     node.onclick=()=>{const id=node.dataset.id;if(id){map.closePopup();openOmodal(id);}};});});
   drawMarkers();
 }
-function topRar(works){return works.map(w=>w.rar).sort((a,b)=>RORDER.indexOf(b)-RORDER.indexOf(a))[0];}
 function drawMarkers(){
   if(!markerLayer)return;markerLayer.clearLayers();
   for(const p of PLACES){
-    const found=p.works.filter(w=>(state.collection[w.id]||0)>0),lit=found.length>0;
-    const rc=R[topRar(lit?found:p.works)].c;
-    const icon=L.divIcon({className:"",iconSize:[26,26],iconAnchor:[13,13],
-      html:`<div class="mk ${lit?'lit':''}" style="--rc:${rc}">${lit?found.length:""}</div>`});
-    L.marker([p.lat,p.lng],{icon,title:p.name}).addTo(markerLayer).bindPopup(popupHTML(p,found.length),{maxWidth:280,minWidth:210});
+    const found=p.works.filter(w=>(state.collection[w.id]||0)>0);
+    if(!found.length)continue;                          // musée placé uniquement une fois découvert
+    const icon=L.divIcon({className:"",iconSize:[14,14],iconAnchor:[7,7],html:'<div class="mk"></div>'});
+    L.marker([p.lat,p.lng],{icon,title:p.name}).addTo(markerLayer).bindPopup(popupHTML(p),{maxWidth:280,minWidth:210});
   }
 }
-function popupHTML(p,foundN){
-  const works=p.works.slice().sort((a,b)=>RORDER.indexOf(b.rar)-RORDER.indexOf(a.rar)||a.nom.localeCompare(b.nom));
-  const rows=works.map(w=>{const have=(state.collection[w.id]||0)>0;
-    return `<div class="cz-work ${have?'found':'locked'}" style="--rc:${R[w.rar].c}" ${have?`data-id="${w.id}"`:''}>
-      <span class="ze">${have?w.emoji:'🔒'}</span>
-      <span class="zt">${have?w.nom:'???'}</span>
-      <span class="zr">${R[w.rar].label}</span></div>`;}).join("");
+function popupHTML(p){
+  const works=p.works.filter(w=>(state.collection[w.id]||0)>0)
+    .sort((a,b)=>RORDER.indexOf(b.rar)-RORDER.indexOf(a.rar)||a.nom.localeCompare(b.nom));
+  const rows=works.map(w=>`<div class="cz-work found" style="--rc:${R[w.rar].c}" data-id="${w.id}">
+      <span class="ze">${w.emoji}</span>
+      <span class="zt">${w.nom}</span>
+      <span class="zr">${R[w.rar].label}</span></div>`).join("");
   return `<div class="mpop"><div class="mpop-h">${p.name}</div>
-    <div class="mpop-sub">${p.city} · ${foundN}/${p.works.length} découvertes</div>
+    <div class="mpop-sub">${p.city} · ${works.length} œuvre${works.length>1?"s":""}</div>
     <div class="mpop-list">${rows}</div></div>`;
 }
 function renderCarte(){
   const visited=PLACES.filter(p=>p.works.some(w=>(state.collection[w.id]||0)>0)).length;
   document.getElementById("cvisitedN").textContent=visited;
-  document.getElementById("cmuseesN").textContent=PLACES.length;
   const foot=document.getElementById("carteFoot");
-  if(foot)foot.textContent=UNLOCATED_COUNT?`${UNLOCATED_COUNT} œuvres en collection privée ne sont pas localisées sur la carte.`:"";
+  if(foot)foot.textContent=visited?"Clique sur un musée pour revoir tes œuvres.":"Tire des packs : les musées de tes œuvres découvertes apparaîtront ici.";
   if(map)drawMarkers();
 }
 
