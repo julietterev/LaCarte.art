@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600;1,9..144,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
 :root{
   --encre:#0c0405; --encre2:#140709; --ardoise:#1c0a0a; --ardoise2:#24100f;
@@ -458,8 +458,7 @@ button{font-family:inherit;color:inherit;border:none;background:none;cursor:poin
   </div>
 </div>
 
-<script src="vendor/leaflet.js"></script>
-<script src="vendor/world.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 // ============================================================
 // DATA — 100 œuvres d'art
@@ -865,11 +864,11 @@ let map=null,markerLayer=null;
 function ensureMap(){
   if(map){map.invalidateSize();return;}
   const el=document.getElementById("mapEl");
-  if(typeof L==="undefined"||typeof window.WORLD==="undefined"){el.innerHTML='<div style="display:grid;place-items:center;height:100%;color:var(--parchemin-dim);font:400 14px \'DM Sans\';text-align:center;padding:20px">La carte n\'a pas pu se charger.</div>';return;}
-  map=L.map(el,{minZoom:2,maxZoom:7,zoomControl:true,attributionControl:true,worldCopyJump:false,maxBounds:[[-82,-185],[85,185]],maxBoundsViscosity:.9}).setView([34,6],2);
-  // Fond de carte vectoriel embarqué (aucune tuile réseau)
-  L.geoJSON(window.WORLD,{interactive:false,style:{fillColor:"#2c1613",fillOpacity:1,stroke:false}}).addTo(map);
-  map.attributionControl.setPrefix("").addAttribution("Fond&nbsp;: Natural&nbsp;Earth");
+  if(typeof L==="undefined"){el.innerHTML='<div style="display:grid;place-items:center;height:100%;color:var(--parchemin-dim);font:400 14px \'DM Sans\';text-align:center;padding:20px">La carte n\'a pas pu se charger.<br>Vérifie ta connexion.</div>';return;}
+  map=L.map(el,{worldCopyJump:true,minZoom:2,maxZoom:7,zoomControl:true,attributionControl:true}).setView([34,6],2);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{
+    subdomains:"abcd",maxZoom:19,
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
   markerLayer=L.layerGroup().addTo(map);
   map.on("popupopen",e=>{e.popup._contentNode.querySelectorAll(".cz-work.found").forEach(node=>{
     node.onclick=()=>{const id=node.dataset.id;if(id){map.closePopup();openOmodal(id);}};});});
